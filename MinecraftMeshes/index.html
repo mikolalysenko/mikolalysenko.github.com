@@ -120,10 +120,8 @@
 				});
 				renderer.setClearColorHex( 0xBBBBBB, 1 );
 			}else{
-				Detector.addGetWebGLMessage();
-				return true;
+			  renderer = new THREE.CanvasRenderer();
 			}
-			
 			
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.getElementById('container').appendChild(renderer.domElement);
@@ -182,6 +180,8 @@
 			
 			//Update mesh
 			updateMesh();
+			
+			return false;
 		}
 
 		// animation loop
