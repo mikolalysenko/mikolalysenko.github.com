@@ -67,6 +67,13 @@ function createTestData() {
     return true;
   });
   
+  result["Matt's Example"]  = makeVoxels([0,0,0], [4,5,1], function(i,j,k) {
+    if( (i == 1 && j == 1) ||
+        (i == 2 && j == 3) ) {
+      return false;    
+    }
+    return true;
+  });
     
   result['Checker'] = makeVoxels([0,0,0], [8,8,8], function(i,j,k) {
     return !!((i+j+k)&1);
