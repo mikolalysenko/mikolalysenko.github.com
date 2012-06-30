@@ -1,4 +1,4 @@
-function LexicographicMesh(volume, dims) {
+function GreedyMesh(volume, dims) {
   function f(i,j,k) {
     return volume[i + dims[0] * (j + dims[1] * k)];
   }

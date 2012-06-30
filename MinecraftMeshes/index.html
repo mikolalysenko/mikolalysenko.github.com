@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Minecraft Mesh Toolbox</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+			
+		<script src="vendor/three.js/Three.js"></script>
+		<script src="vendor/three.js/Detector.js"></script>
+		<script src="vendor/three.js/Stats.js"></script>
+
+		<script src="vendor/threex/THREEx.screenshot.js"></script>
+		<script src="vendor/threex/THREEx.FullScreen.js"></script>
+		<script src="vendor/threex/THREEx.WindowResize.js"></script>
+		<script src="vendor/threex.dragpancontrols.js"></script>
+
+
+    <!--Mesh algorithms-->
+    <script src="js/stupid.js"></script>
+    <script src="js/culled.js"></script>
+    <script src="js/greedy.js"></script>
+
+    <script src="js/testdata.js"></script>
+
+		<link  href="css/main.css" rel="stylesheet"/>
+	</head>
+<body>
+	<!-- three.js container -->
+    	<div id="container"></div>
+	<!-- info on screen display -->
+	<div id="info">
+		<div class="top">
+			Minecraft Mesh Algorithm Tester
+		</div>
+		<div class="bottom" id="inlineDoc" >
+			- <i>p</i> for screenshot
+		</div>
+	  <div class="controls">
+	    <p>Data source:</p>
+	    <p><select id="datasource"></select></p>
+	    <p>Mesher:</p>
+	    <p><select id="mesher"></select></p>
+	    <p>Show facets: <input type="checkbox" id="showfacets" value="checked" /></p>
+	    <p>Show edges: <input type="checkbox" id="showedges" value="checked" /></p>
+	    <p>Quad count: <input type="text" id="quadcount" value="0" /> </p>	    	
+	  </div> 
+	</div> 
+	
+	<script type="text/javascript">
+		var stats, scene, renderer, composer;
+		var camera, cameraControl;
+		var geometry, surfacemesh, wiremesh;
+		var meshers = {
+		    'Stupid': StupidMesh
+		  , 'Culled': CulledMesh
+		  , 'Greedy': GreedyMesh
+		};
+		var testdata = {};
+		
+		
+		function updateMesh() {
+		
+		  scene.remove( surfacemesh );
+		  scene.remove( wiremesh );
+		  
+      //Create surface mesh
+			geometry	= new THREE.Geometry();
+			var material	= new THREE.MeshNormalMaterial();
+			surfacemesh	= new THREE.Mesh( geometry, material );
+			surfacemesh.doubleSided = true;
+			var wirematerial = new THREE.MeshBasicMaterial({
+			    color : 0xffffff
+			  , wireframe : true
+			});
+			wiremesh = new THREE.Mesh(geometry, wirematerial);
+			wiremesh.doubleSided = true;
+			scene.add( surfacemesh );
+			scene.add( wiremesh );			
+		
+		  var mesher = meshers[ document.getElementById("mesher").value ]
+		    , data   = testdata[ document.getElementById("datasource").value ]
+        , result = mesher( data.voxels, data.dims );
+      document.getElementById("quadcount").value = result.length;
+      geometry.vertices.length = 0;
+      geometry.faces.length = 0;
+      for(var i=0; i<result.length; ++i) {
+        var q = result[i]
+          , n = geometry.vertices.length;
+        for(var j=0; j<4; ++j) {
+          geometry.vertices.push(new THREE.Vector3(q[j][0], q[j][1], q[j][2]));
+        }
+        geometry.faces.push(new THREE.Face4(n, n+1, n+2, n+3));
+      }
+      geometry.computeFaceNormals();
+      
+      geometry.verticesNeedUpdate = true;
+      geometry.elementsNeedUpdate = true;
+      geometry.normalsNeedUpdate = true;
+      
+      geometry.computeBoundingBox();
+      geometry.computeBoundingSphere();
+      
+      var bb = geometry.boundingBox;
+      wiremesh.position.x = surfacemesh.position.x = -(bb.max.x + bb.min.x) / 2.0;
+      wiremesh.position.y = surfacemesh.position.y = -(bb.max.y + bb.min.y) / 2.0;
+      wiremesh.position.z = surfacemesh.position.z = -(bb.max.z + bb.min.z) / 2.0;
+		}
+
+		if( !init() )	animate();
+
+		// init the scene
+		function init(){
+				
+			if( Detector.webgl ){
+				renderer = new THREE.WebGLRenderer({
+					antialias		: true,	// to get smoother output
+					preserveDrawingBuffer	: true	// to allow screenshot
+				});
+				renderer.setClearColorHex( 0xBBBBBB, 1 );
+			}else{
+			  renderer = new THREE.CanvasRenderer();
+			}
+			
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.getElementById('container').appendChild(renderer.domElement);
+
+			// add Stats.js - https://github.com/mrdoob/stats.js
+			stats = new Stats();
+			stats.domElement.style.position	= 'absolute';
+			stats.domElement.style.bottom	= '0px';
+			document.body.appendChild( stats.domElement );
+
+			// create a scene
+			scene = new THREE.Scene();
+
+			// put a camera in the scene
+			camera	= new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000 );
+			camera.position.set(0, 0, 5);
+			scene.add(camera);
+
+			// create a camera contol
+			cameraControls	= new THREE.TrackballControls( camera, document.getElementById('container') )
+
+			// transparently support window resize
+			THREEx.WindowResize.bind(renderer, camera);
+			// allow 'p' to make screenshot
+			THREEx.Screenshot.bindKey(renderer);
+			// allow 'f' to go fullscreen where this feature is supported
+			if( THREEx.FullScreen.available() ){
+				THREEx.FullScreen.bindKey();		
+				document.getElementById('inlineDoc').innerHTML	+= "- <i>f</i> for fullscreen";
+			}
+
+			// here you add your objects
+			// - you will most likely replace this part by your own
+			var light	= new THREE.AmbientLight( Math.random() * 0xffffff );
+			scene.add( light );
+			var light	= new THREE.DirectionalLight( Math.random() * 0xffffff );
+			light.position.set( Math.random(), Math.random(), Math.random() ).normalize();
+			scene.add( light );
+
+      
+			//Initialize dom elements
+			testdata = createTestData();
+			var ds = document.getElementById("datasource");
+			for(var id in testdata) {
+			  ds.add(new Option(id, id), null);
+			}
+			ds.onchange = updateMesh;
+			var ms = document.getElementById("mesher");
+			for(var alg in meshers) {
+			  ms.add(new Option(alg, alg), null);
+			}
+			ms.onchange = updateMesh;
+			
+			document.getElementById("showfacets").checked = true;
+			document.getElementById("showedges").checked  = true;
+			
+			//Update mesh
+			updateMesh();
+			
+			return false;
+		}
+
+		// animation loop
+		function animate() {
+
+			// loop on request animation loop
+			// - it has to be at the begining of the function
+			// - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+			requestAnimationFrame( animate );
+
+			// do the render
+			render();
+
+			// update stats
+			stats.update();
+		}
+
+		// render the scene
+		function render() {
+			// variable which is increase by Math.PI every seconds - usefull for animation
+			var PIseconds	= Date.now() * Math.PI;
+
+			// update camera controls
+			cameraControls.update();
+
+      surfacemesh.visible = document.getElementById("showfacets").checked;
+      wiremesh.visible = document.getElementById("showedges").checked;
+
+			// actually render the scene
+			renderer.render( scene, camera );
+		}
+	</script>
+</body>
+</html>
