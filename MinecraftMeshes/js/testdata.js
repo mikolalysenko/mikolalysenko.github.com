@@ -27,6 +27,13 @@ function createTestData() {
       (10 <= i && i < 14 && 2 <= j && j < 15);
   });
   
+  result['T-Shape'] = makeVoxels([0,0,0], [16,16,3], function(i,j,k) {
+    return (( 6 <= i && i < 10 && 2 <= j && j < 13) ||
+      ( 2 <= i && i < 14 && 8 <= j && j < 13));
+  });
+  
+  
+  
   result['Checker'] = makeVoxels([0,0,0], [8,8,8], function(i,j,k) {
     return !!((i+j+k)&1);
   });
@@ -54,6 +61,8 @@ function createTestData() {
   result['SineTerrain'] = makeVoxels([0,0,0], [32, 8, 32], function(i,j,k) {
      return j <= 3.0 * Math.sin(Math.PI * i / 12.0 - Math.PI * k * 0.1) + 4.0;
   });
+  
+  
   
   result['Empty'] = { voxels : [], dims : [0,0,0] };
 
