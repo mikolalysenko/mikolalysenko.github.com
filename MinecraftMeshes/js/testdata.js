@@ -32,8 +32,42 @@ function createTestData() {
       ( 2 <= i && i < 14 && 8 <= j && j < 13));
   });
   
+  result['Clover'] = makeVoxels([0,0,0], [17,17,1], function(i,j,k) {
+    if(i == 0 && Math.abs(j-8) <= 2) {
+      return false;
+    } else if(i == 16 && Math.abs(j-8) <= 2) {
+      return false;
+    } else if(j == 0 && Math.abs(i-8) <= 2) {
+      return false;
+    } else if(j == 16 && Math.abs(i-8) <= 2) {
+      return false;
+    } else {
+      return true;
+    }
+  });
   
+  result['Triangle'] = makeVoxels([0,0,0], [17,17,1], function(i,j,k) {
+    return (i < j);
+  });
   
+  result['Saw'] = makeVoxels([0,0,0], [17,3,1], function(i,j,k) {
+    if( j > 0) {
+      return true;
+    }
+    return !!(i & 1);
+  });
+  
+  result['4Holes']  = makeVoxels([0,0,0], [7,7,1], function(i,j,k) {
+    if( (i == 2 && j == 1) ||
+        (i == 5 && j == 2) ||
+        (i == 1 && j == 4) ||
+        (i == 4 && j == 5) ) {
+      return false;    
+    }
+    return true;
+  });
+  
+    
   result['Checker'] = makeVoxels([0,0,0], [8,8,8], function(i,j,k) {
     return !!((i+j+k)&1);
   });
