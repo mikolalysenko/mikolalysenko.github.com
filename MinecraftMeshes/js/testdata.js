@@ -74,7 +74,7 @@ function createTestData() {
     }
     return true;
   });
-    
+  
   result['Checker'] = makeVoxels([0,0,0], [8,8,8], function(i,j,k) {
     return !!((i+j+k)&1);
   });
