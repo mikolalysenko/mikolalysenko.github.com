@@ -37,7 +37,16 @@ function createTestData() {
     }
   );
   
-  result['BigSphere'] = makeVolume(
+  result['Torus'] = makeVolume(
+    [[-2.0, 2.0, 0.2],
+     [-2.0, 2.0, 0.2],
+     [-1.0, 1.0, 0.2]],
+    function(x,y,z) {
+      return Math.pow(1.0 - Math.sqrt(x*x + y*y), 2) + z*z - 0.25;
+    }
+  );
+
+  result['Big Sphere'] = makeVolume(
     [[-1.0, 1.0, 0.05],
      [-1.0, 1.0, 0.05],
      [-1.0, 1.0, 0.05]],
@@ -46,12 +55,54 @@ function createTestData() {
     }
   );
   
-  result['Torus'] = makeVolume(
-    [[-2.0, 2.0, 0.2],
-     [-2.0, 2.0, 0.2],
-     [-1.0, 1.0, 0.2]],
+  result['Hyperelliptic'] = makeVolume(
+    [[-1.0, 1.0, 0.05],
+     [-1.0, 1.0, 0.05],
+     [-1.0, 1.0, 0.05]],
     function(x,y,z) {
-      return Math.pow(1.0 - Math.sqrt(x*x + y*y), 2) + z*z - 0.25;
+      return Math.pow( Math.pow(x, 6) + Math.pow(y, 6) + Math.pow(z, 6), 1.0/6.0 ) - 1.0;
+    }  
+  );
+  
+  result['Nodal Cubic'] = makeVolume(
+    [[-2.0, 2.0, 0.05],
+     [-2.0, 2.0, 0.05],
+     [-2.0, 2.0, 0.05]],
+    function(x,y,z) {
+      return x*y + y*z + z*x + x*y*z;
+    }
+  );
+  
+  result["Goursat's Surface"] = makeVolume(
+    [[-2.0, 2.0, 0.05],
+     [-2.0, 2.0, 0.05],
+     [-2.0, 2.0, 0.05]],
+    function(x,y,z) {
+      return Math.pow(x,4) + Math.pow(y,4) + Math.pow(z,4) - 1.5 * (x*x  + y*y + z*z) + 1;
+    }
+  );
+  
+  result["Heart"] = makeVolume(
+    [[-2.0, 2.0, 0.05],
+     [-2.0, 2.0, 0.05],
+     [-2.0, 2.0, 0.05]],
+    function(x,y,z) {
+      y *= 1.5;
+      z *= 1.5;
+      return Math.pow(2*x*x+y*y+2*z*z-1, 3) - 0.1 * z*z*y*y*y - y*y*y*x*x;
+    }
+  );
+  
+  result["Nordstrand's Weird Surface"] = makeVolume(
+    [[-0.8, 0.8, 0.01],
+     [-0.8, 0.8, 0.01],
+     [-0.8, 0.8, 0.01]],
+    function(x,y,z) {
+      return 25 * (Math.pow(x,3)*(y+z) + Math.pow(y,3)*(x+z) + Math.pow(z,3)*(x+y)) +
+        50 * (x*x*y*y + x*x*z*z + y*y*z*z) -
+        125 * (x*x*y*z + y*y*x*z+z*z*x*y) +
+        60*x*y*z -
+        4*(x*y+x*z+y*z);
     }
   );
   
@@ -81,6 +132,16 @@ function createTestData() {
       return (x*x + y*y + z*z) - PerlinNoise.noise(x*2,y*2,z*2);
     }
   );
+  
+  result['Terrain'] = makeVolume(
+    [[-1, 1, 0.08],
+     [-1, 1, 0.08],
+     [-1, 1, 0.08]],
+    function(x,y,z) {
+      return  y + PerlinNoise.noise(x*2+5,y*2+3,z*2+0.6);
+    }
+  );
+  
   
   
   result['Empty'] = function(){ return { data: new Float32Array(0), dims:[0,0,0] } };
