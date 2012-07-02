@@ -18,6 +18,7 @@
 
     <!--Mesh algorithms-->
     <script src="js/marchingcubes.js"></script>
+    <script src="js/marchingtetrahedra.js"></script>
     <script src="js/dualcontour.js"></script>
     
     <script src="js/testdata.js"></script>
@@ -53,8 +54,9 @@
 		var camera, cameraControl;
 		var geometry, surfacemesh, wiremesh;
 		var meshers = {
-	      'DualContouring': DualContouring
-		  ,  'MarchingCubes': MarchingCubes
+		     'Marching Tetraheda' : MarchingTetrahedra
+		  ,  'Marching Cubes': MarchingCubes
+	    ,  'Dual Contouring': DualContouring
 		};
 		var testdata = {};
 		

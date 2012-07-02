@@ -1,16 +1,16 @@
 "use strict";
 var DualContouring = (function() {
 
-var cube_vertices = [];
-(function() {
-  var n = 0;
-  for(var k=0; k<2; ++k)
-  for(var j=0; j<2; ++j)
-  for(var i=0; i<2; ++i, ++n) {
-    cube_vertices[n] = new Float32Array([i,j,k]);
-  }
-})();
-var cube_edges = new Int32Array([
+var cube_vertices = [
+      [0,0,0]
+    , [1,0,0]
+    , [0,1,0]
+    , [1,1,0]
+    , [0,0,1]
+    , [1,0,1]
+    , [0,1,1]
+    , [1,1,1] ]
+ , cube_edges = new Int32Array([
       0, 1
     , 0, 2
     , 0, 4
@@ -23,12 +23,6 @@ var cube_edges = new Int32Array([
     , 4, 6
     , 5, 7
     , 6, 7 ]);
-/*
-  edgeR = new Int32Array([
-      1, 2
-    , 2, 0
-    , 0, 1 ]);
-*/
 
 //Internal buffer
 var buffer = new Int32Array(4096);    
@@ -72,7 +66,7 @@ return function(data, dims) {
         continue;
       }
       buffer[m] = vertices.length;
-      
+
       //Compute vertex and face
       var v = [0,0,0], e_count = 0;
       for(var i=0; i<24; i+=2) {
@@ -80,12 +74,10 @@ return function(data, dims) {
           , e1 = cube_edges[i+1]
           , g0 = grid[e0]
           , g1 = grid[e1];
-          
         //Check for 0-crossing
         if(((g0 < 0) === (g1 < 0))) {
           continue; 
         }
-        
         //Add face
         var iu = ((i>>1)+1)%3
           , iv = ((i>>1)+2)%3;
@@ -98,7 +90,6 @@ return function(data, dims) {
             faces.push([buffer[m], buffer[m-dv], buffer[m-du-dv], buffer[m-du]]);
           }
         }
-        
         //Find edge intersections
         ++e_count;
         var p0 = cube_vertices[e0]
@@ -113,7 +104,6 @@ return function(data, dims) {
           v[j] = (v[j] + p0[j]) + t * (p1[j] - p0[j]);
         }
       }
-      
       //Add vertex to list
       var s = 1.0 / e_count;
       for(var i=0; i<3; ++i) {
@@ -122,8 +112,6 @@ return function(data, dims) {
       vertices.push(v);
     }
   }
-  
-    
   return { vertices: vertices, faces: faces };
 };
 })();
