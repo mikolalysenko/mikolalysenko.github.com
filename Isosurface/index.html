@@ -44,6 +44,7 @@
 	    <p><select id="mesher"></select></p>
 	    <p>Show facets: <input type="checkbox" id="showfacets" value="checked" /></p>
 	    <p>Show edges: <input type="checkbox" id="showedges" value="checked" /></p>
+	    <p>Resolution: <input type="text" id="resolution" value="0" /> </p>
 	    <p>Vertex count: <input type="text" id="vertcount" value="0" /> </p>
 	    <p>Face count: <input type="text" id="facecount" value="0" /> </p>
 	    <p>(Approx.) Time:<input type="text" id="meshtime" value="0" /> </p>
@@ -78,6 +79,7 @@
       var end = (new Date()).getTime();
       
       //Update statistics
+      document.getElementById("resolution").value = field.dims[0] + 'x' + field.dims[1] + 'x' + field.dims[2];
       document.getElementById("vertcount").value = result.vertices.length;
       document.getElementById("facecount").value = result.faces.length;
       document.getElementById("meshtime").value = (end - start) / 1000.0;
