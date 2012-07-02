@@ -19,8 +19,9 @@
     <!--Mesh algorithms-->
     <script src="js/marchingcubes.js"></script>
     <script src="js/marchingtetrahedra.js"></script>
-    <script src="js/dualcontour.js"></script>
+    <script src="js/dualcontour_precalc_edge.js"></script>
     
+    <script src="js/perlinnoise.js"></script>
     <script src="js/testdata.js"></script>
 
 		<link  href="css/main.css" rel="stylesheet"/>
@@ -37,9 +38,9 @@
 			- <i>p</i> for screenshot
 		</div>
 	  <div class="controls">
-	    <p>Data source:</p>
+	    <p>Input Data:</p>
 	    <p><select id="datasource"></select></p>
-	    <p>Mesher:</p>
+	    <p>Algorithm:</p>
 	    <p><select id="mesher"></select></p>
 	    <p>Show facets: <input type="checkbox" id="showfacets" value="checked" /></p>
 	    <p>Show edges: <input type="checkbox" id="showedges" value="checked" /></p>
@@ -54,9 +55,9 @@
 		var camera, cameraControl;
 		var geometry, surfacemesh, wiremesh;
 		var meshers = {
-		     'Marching Tetraheda' : MarchingTetrahedra
+	      'Dual Contouring': DualContouring
+		  ,   'Marching Tetraheda' : MarchingTetrahedra
 		  ,  'Marching Cubes': MarchingCubes
-	    ,  'Dual Contouring': DualContouring
 		};
 		var testdata = {};
 		
@@ -70,7 +71,7 @@
 			geometry	= new THREE.Geometry();
 		
 		  var mesher = meshers[ document.getElementById("mesher").value ]
-		    , field  = testdata[ document.getElementById("datasource").value ];
+		    , field  = testdata[ document.getElementById("datasource").value ]();
 		    
 		  var start = (new Date()).getTime();
       var result = mesher( field.data, field.dims );

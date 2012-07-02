@@ -25,10 +25,12 @@ var cube_vertices = [
     , 6, 7 ]);
 
 //Internal buffer
-var buffer = new Int32Array(4096);    
+var buffer = new Int32Array(4096);
 
 return function(data, dims) {
 
+  console.time("Dual Contouring");
+  
   var vertices = []
     , faces = []
     , n = 0
@@ -50,19 +52,18 @@ return function(data, dims) {
     for(x[0]=0; x[0]<dims[0]-1; ++x[0], ++n, ++m) {
     
       //Read in field values
-      var pos = false, neg = false, g = 0, idx = n;
+      var npos = true, nneg = true, g = 0, idx = n;
       for(var k=0; k<2; ++k, idx += dims[0]*(dims[1]-2))
       for(var j=0; j<2; ++j, idx += dims[0]-2)      
       for(var i=0; i<2; ++i, ++g, ++idx) {
         var p = data[idx];
-        pos |= p >= 0;
-        neg |= p <= 0;
+        npos &= p < 0;
+        nneg &= p > 0;
         grid[g] = p;
       }
       
       //If cell is not on boundary, skip it
-      if(!(pos & neg)) {
-        buffer[m] = -1;
+      if(npos || nneg) {
         continue;
       }
       buffer[m] = vertices.length;
@@ -112,6 +113,9 @@ return function(data, dims) {
       vertices.push(v);
     }
   }
+  
+  console.timeEnd("Dual Contouring");
+  
   return { vertices: vertices, faces: faces };
 };
 })();

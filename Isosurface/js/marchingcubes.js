@@ -1,5 +1,7 @@
 "use strict";
 //Adapted from Paul Bourke's classic implementation
+// http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise/
+
 var MarchingCubes = (function() {
 
 var edgeTable= new Uint32Array([
@@ -305,6 +307,8 @@ var edgeTable= new Uint32Array([
 
 return function(data, dims) {
 
+  console.time("Marching Cubes");
+
   var vertices = []
     , faces = []
     , n = 0
@@ -332,7 +336,7 @@ return function(data, dims) {
       continue;
     }
     for(var i=0; i<12; ++i) {
-      if(edge_mask & (1<<i) === 0) {
+      if((edge_mask & (1<<i)) === 0) {
         continue;
       }
       edges[i] = vertices.length;
@@ -343,7 +347,10 @@ return function(data, dims) {
         , a = grid[e[0]]
         , b = grid[e[1]]
         , d = a - b
-        , t = (Math.abs(d) > 1e-6) ? a / d : 0;
+        , t = 0;
+      if(Math.abs(d) > 1e-6) {
+        t = a / d;
+      }
       for(var j=0; j<3; ++j) {
         nv[j] = (x[j] + p0[j]) + t * (p1[j] - p0[j]);
       }
@@ -356,6 +363,9 @@ return function(data, dims) {
       faces.push([edges[f[i]], edges[f[i+1]], edges[f[i+2]]]);
     }
   }
+
+
+  console.timeEnd("Marching Cubes");
 
   return { vertices: vertices, faces: faces };
 };
