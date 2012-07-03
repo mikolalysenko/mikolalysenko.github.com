@@ -1,9 +1,13 @@
-"use strict";
-//Adapted from Paul Bourke's classic implementation
-// http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise/
+/**
+ * Javascript Marching Cubes
+ *
+ * Based on Paul Bourke's classic implementation:
+ *    http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise/
+ *
+ * JS port by Mikola Lysenko
+ */
 
 var MarchingCubes = (function() {
-
 var edgeTable= new Uint32Array([
       0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
       0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,
@@ -306,21 +310,16 @@ var edgeTable= new Uint32Array([
   , edgeIndex = [ [0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7] ];
 
 return function(data, dims) {
-
-  console.time("Marching Cubes");
-
   var vertices = []
     , faces = []
     , n = 0
     , grid = new Float32Array(8)
     , edges = new Int32Array(12)
-    , x = [0,0,0];
-  
+    , x = new Int32Array(3);
   //March over the volume
   for(x[2]=0; x[2]<dims[2]-1; ++x[2], n+=dims[0])
   for(x[1]=0; x[1]<dims[1]-1; ++x[1], ++n)
   for(x[0]=0; x[0]<dims[0]-1; ++x[0], ++n) {
-  
     //For each cell, compute cube mask
     var cube_index = 0;
     for(var i=0; i<8; ++i) {
@@ -329,7 +328,6 @@ return function(data, dims) {
       grid[i] = s;
       cube_index |= (s > 0) ? 1 << i : 0;
     }
-
     //Compute vertices
     var edge_mask = edgeTable[cube_index];
     if(edge_mask === 0) {
@@ -356,18 +354,17 @@ return function(data, dims) {
       }
       vertices.push(nv);
     }
-    
     //Add faces
     var f = triTable[cube_index];
     for(var i=0; i<f.length; i += 3) {
       faces.push([edges[f[i]], edges[f[i+1]], edges[f[i+2]]]);
     }
   }
-
-
-  console.timeEnd("Marching Cubes");
-
   return { vertices: vertices, faces: faces };
 };
-
 })();
+
+if(exports) {
+  exports.mesher = MarchingCubes;
+}
+

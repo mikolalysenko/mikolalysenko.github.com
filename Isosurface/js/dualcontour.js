@@ -29,8 +29,6 @@ var buffer = new Int32Array(4096);
 
 return function(data, dims) {
 
-  console.time("Dual Contouring");
-  
   var vertices = []
     , faces = []
     , n = 0
@@ -52,18 +50,17 @@ return function(data, dims) {
     for(x[0]=0; x[0]<dims[0]-1; ++x[0], ++n, ++m) {
     
       //Read in field values
-      var npos = true, nneg = true, g = 0, idx = n;
+      var mask = 0, g = 0, idx = n;
       for(var k=0; k<2; ++k, idx += dims[0]*(dims[1]-2))
       for(var j=0; j<2; ++j, idx += dims[0]-2)      
       for(var i=0; i<2; ++i, ++g, ++idx) {
         var p = data[idx];
-        npos &= p < 0;
-        nneg &= p > 0;
+        mask |= (p < 0) ? (1 << g) : 0;
         grid[g] = p;
       }
       
       //If cell is not on boundary, skip it
-      if(npos || nneg) {
+      if((mask === 0) || (mask === 0xff)) {
         continue;
       }
       buffer[m] = vertices.length;
@@ -73,10 +70,10 @@ return function(data, dims) {
       for(var i=0; i<24; i+=2) {
         var e0 = cube_edges[i]
           , e1 = cube_edges[i+1]
-          , g0 = grid[e0]
-          , g1 = grid[e1];
+          , s0 = !!(mask & (1 << e0))
+          , s1 = !!(mask & (1 << e1));
         //Check for 0-crossing
-        if(((g0 < 0) === (g1 < 0))) {
+        if( s0 === s1 ) {
           continue; 
         }
         //Add face
@@ -85,7 +82,7 @@ return function(data, dims) {
         if(i < 6 && x[iu] > 0 && x[iv] > 0) {
           var du = R[iu]
             , dv = R[iv];
-          if(g0 < g1) {
+          if(mask & 1) {
             faces.push([buffer[m], buffer[m-du], buffer[m-du-dv], buffer[m-dv]]);
           } else {
             faces.push([buffer[m], buffer[m-dv], buffer[m-du-dv], buffer[m-du]]);
@@ -95,6 +92,8 @@ return function(data, dims) {
         ++e_count;
         var p0 = cube_vertices[e0]
           , p1 = cube_vertices[e1]
+          , g0 = grid[e0]
+          , g1 = grid[e1]
           , t  = g0 - g1;
         if(Math.abs(t) > 1e-6) {
           t = g0 / t;
@@ -114,9 +113,13 @@ return function(data, dims) {
     }
   }
   
-  console.timeEnd("Dual Contouring");
-  
   return { vertices: vertices, faces: faces };
 };
 })();
+
+
+if(exports) {
+  exports.mesher = DualContouring;
+}
+
 

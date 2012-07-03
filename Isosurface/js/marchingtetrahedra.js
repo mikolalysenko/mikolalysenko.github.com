@@ -1,10 +1,13 @@
-"use strict";
-
-// Adapted from Paul Bourke's implementation
-//  http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise/
-//
-// Several bug fixes were made to deal with oriented faces
-//
+/**
+ * Marching Tetrahedra in Javascript
+ *
+ * Based on Paul Bourke's implementation
+ *  http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise/
+ *
+ * (Several bug fixes were made to deal with oriented faces)
+ *
+ * Javascript port by Mikola Lysenko
+ */
 var MarchingTetrahedra = (function() {
 var cube_vertices = [
         [0,0,0]
@@ -24,8 +27,6 @@ var cube_vertices = [
       , [5,6,1,4] ];
 
 return function(data, dims) {
-   
-   console.time("Marching Tetrahedra");
    
    var vertices = []
     , faces = []
@@ -166,10 +167,11 @@ return function(data, dims) {
     }
   }
   
-  console.timeEnd("Marching Tetrahedra");
-
   return { vertices: vertices, faces: faces };
 }
-
 })();
 
+
+if(exports) {
+  exports.mesher = MarchingTetrahedra;
+}
