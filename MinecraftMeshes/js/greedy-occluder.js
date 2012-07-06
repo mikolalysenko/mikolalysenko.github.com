@@ -17,9 +17,9 @@ function GreedyMesh(volume, dims) {
       var n = 0;
       for(x[v]=0; x[v]<dims[v]; ++x[v])
       for(x[u]=0; x[u]<dims[u]; ++x[u]) {
-        mask[n++] =
-          (0    <= x[d]      ? f(x[0],      x[1],      x[2])      : false) !=
-          (x[d] <  dims[d]-1 ? f(x[0]+q[0], x[1]+q[1], x[2]+q[2]) : false);
+        var a = (0    <= x[d]      ? !!f(x[0],      x[1],      x[2])      : false),
+            b = (x[d] <  dims[d]-1 ? !!f(x[0]+q[0], x[1]+q[1], x[2]+q[2]) : false);
+        mask[n++] = ((a !== b) ? 1 : 0) + (b ? 2 : 0);
       }
       //Increment x[d]
       ++x[d];
@@ -27,9 +27,9 @@ function GreedyMesh(volume, dims) {
       n = 0;
       for(j=0; j<dims[v]; ++j)
       for(i=0; i<dims[u]; ) {
-        if(mask[n]) {
+        if(mask[n] === 1) {
           //Compute width
-          for(w=1; mask[n+w] && i+w<dims[u]; ++w) {
+          for(w=1; !!mask[n+w] && i+w<dims[u]; ++w) {
           }
           //Compute height (this is slightly awkward
           var done = false;
@@ -57,7 +57,7 @@ function GreedyMesh(volume, dims) {
           //Zero-out mask
           for(l=0; l<h; ++l)
           for(k=0; k<w; ++k) {
-            mask[n+k+l*dims[u]] = false;
+            mask[n+k+l*dims[u]] = 0;
           }
           //Increment counters and continue
           i += w; n += w;

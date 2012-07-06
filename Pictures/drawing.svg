@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="drawing.svg"
+   inkscape:export-filename="/home/mikola/GitHub/mikolalysenko.github.com/Pictures/drawing.png"
+   inkscape:export-xdpi="200.72389"
+   inkscape:export-ydpi="200.72389">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path3798"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="219.99609"
+     inkscape:cy="515.48464"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1364"
+     inkscape:window-height="712"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       transform="translate(-147.48227,-18.182751)"
+       sodipodi:type="arc"
+       style="fill:#969696;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 4;stroke-dashoffset:0"
+       id="path2985-5"
+       sodipodi:cx="279.81226"
+       sodipodi:cy="462.43311"
+       sodipodi:rx="51.51778"
+       sodipodi:ry="47.477169"
+       d="m 331.33004,462.43311 a 51.51778,47.477169 0 1 1 -103.03556,0 51.51778,47.477169 0 1 1 103.03556,0 z"
+       inkscape:transform-center-x="108.08632"
+       inkscape:export-filename="/home/mikola/GitHub/mikolalysenko.github.com/Pictures/interiorboundary.png"
+       inkscape:export-xdpi="200.72389"
+       inkscape:export-ydpi="200.72389" />
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="123.23861"
+       y="531.12347"
+       id="text5393"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/mikola/GitHub/mikolalysenko.github.com/Pictures/interiorboundary.png"
+       inkscape:export-xdpi="200.72389"
+       inkscape:export-ydpi="200.72389"><tspan
+         sodipodi:role="line"
+         id="tspan5395"
+         x="123.23861"
+         y="531.12347">S</tspan></text>
+    <path
+       style="fill:none;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 121.21831,438.18943 c -1.49573,1.73852 -1.77752,4.18151 -3.03046,6.06092 -0.26414,0.39621 -0.74601,0.61394 -1.01015,1.01015 -0.41765,0.62647 -0.59251,1.39384 -1.01016,2.02031 -0.26414,0.39621 -0.79719,0.58423 -1.01015,1.01015 -0.15058,0.30117 0.18678,0.72999 0,1.01015 -2.2584,3.3876 -2.0203,0.66869 -2.0203,3.03046 0,0.33672 0,0.67343 0,1.01015 0,0.33672 -0.2381,0.77206 0,1.01015 0.23809,0.2381 0.77205,-0.23809 1.01015,0 0.23809,0.2381 -0.2381,0.77206 0,1.01016 2.09004,2.09004 -0.0817,-3.19386 2.0203,1.01015 0.15059,0.30117 -0.30117,0.85957 0,1.01015 0.60234,0.30117 1.38143,-0.21296 2.02031,0 0.45175,0.15059 0.58423,0.7972 1.01015,1.01015 0.6349,0.31746 3.40571,-0.31745 4.04061,0 0.85184,0.42592 1.16847,1.59439 2.02031,2.02031 0.30117,0.15058 0.70898,-0.15059 1.01015,0 0.85183,0.42592 1.16847,1.59439 2.0203,2.0203 0.30117,0.15059 1.01016,-0.33671 1.01016,0 0,0.47619 -1.01016,0.53397 -1.01016,1.01016 0,0.33671 0.77206,-0.2381 1.01016,0 0.47619,0.47619 -0.47619,1.54411 0,2.0203 0.23809,0.2381 1.01015,-0.33672 1.01015,0 0,0.47619 -0.79719,0.58424 -1.01015,1.01015 -0.15059,0.30117 0,0.67344 0,1.01016 0,0.33671 -0.15059,0.70898 0,1.01015 0.21296,0.42592 1.01015,0.53396 1.01015,1.01015 0,1.34687 -2.35702,-1.68359 -1.01015,1.01015 0.41068,0.82137 1.6024,0.83582 1.01015,2.02031 -0.21296,0.42592 -0.67344,0.67343 -1.01015,1.01015 -0.33672,0.33672 -0.61394,0.74601 -1.01016,1.01015 -0.62647,0.41765 -1.39383,0.59251 -2.0203,1.01016 -0.39622,0.26414 -0.58424,0.79719 -1.01015,1.01015 -0.30117,0.15058 -0.70899,-0.15058 -1.01016,0 -0.42591,0.21296 -0.58423,0.79719 -1.01015,1.01015 -0.30117,0.15059 -0.70898,-0.15058 -1.01015,0 -0.42592,0.21296 -0.58424,0.7972 -1.01015,1.01016 -0.60234,0.30116 -1.38143,-0.21296 -2.02031,0 -0.71429,0.23809 -1.28986,0.82754 -2.0203,1.01015 -0.98,0.245 -2.02031,0 -3.03046,0 -0.24499,0 -2.99797,0.0325 -3.03046,0 -0.23809,-0.2381 0.2381,-0.77206 0,-1.01015 -0.47619,-0.4762 -1.54411,0.47619 -2.0203,0 -0.2381,-0.2381 0.23809,-0.77206 0,-1.01016 -0.2381,-0.23809 -0.77206,0.2381 -1.01016,0 -0.23809,-0.23809 0.2381,-0.77205 0,-1.01015 -0.23809,-0.2381 -0.77205,0.2381 -1.01015,0 -0.2381,-0.2381 0.2381,-0.77206 0,-1.01015 -0.2381,-0.2381 -1.01015,0.33672 -1.01015,0 0,-0.47619 0.79719,-0.58424 1.01015,-1.01016 0.55538,-1.11076 -0.97282,-2.03897 1.01015,-3.03045 0.30117,-0.15059 0.67344,0 1.01016,0 0.33671,0 0.77205,-0.2381 1.01015,0 0.23809,0.23809 0.33672,1.01015 0,1.01015 -0.33672,0 0,-0.67344 0,-1.01015"
+       id="path2995"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 152.53303,418.99653 c -1.34687,0.33672 -2.69374,0.67344 -4.04061,1.01016 -0.33671,0.33671 -0.58423,0.79719 -1.01015,1.01015 -0.30117,0.15058 -0.77206,-0.2381 -1.01015,0 -0.32475,0.32475 0.22117,2.41479 1.01015,2.02031 1.92843,-0.96422 3.52621,-5.56517 5.05076,-4.04062 1.52456,1.52456 -2.93133,3.20198 -4.04061,5.05077 -0.17324,0.28873 0.70899,-0.15059 1.01016,0 0.85183,0.42592 1.16847,1.59438 2.0203,2.0203 0.30117,0.15059 0.77206,-0.23809 1.01015,0 0.5324,0.5324 0.59251,1.39384 1.01016,2.02031 0.92644,1.38967 1.55838,1.03892 3.03045,2.0203 1.38967,0.92645 1.03893,1.55838 2.02031,3.03046 0.26414,0.39621 1.16074,0.5584 1.01015,1.01015 -0.30117,0.90351 -2.0203,1.06793 -2.0203,2.02031 0,0.67343 1.41796,-0.30117 2.0203,0 0.30117,0.15058 -0.15058,0.70898 0,1.01015 0.21296,0.42592 0.7972,0.58424 1.01016,1.01015 0.67343,1.34687 -1.34687,2.69374 -2.02031,4.04061 -0.15058,0.30117 0,0.67344 0,1.01016 0,2.69374 -0.33672,-0.33672 1.01015,1.01015 0.88265,0.88264 -1.01015,1.62581 -1.01015,2.0203 0,0.33672 1.01015,-0.33671 1.01015,0 0,0.47619 -0.79719,0.58424 -1.01015,1.01016 -0.15371,0.30742 0,2.57552 0,3.03045 0,0.33672 -0.2381,0.77206 0,1.01016 0.2381,0.23809 1.01015,-0.33672 1.01015,0 0,0.47619 -1.01015,0.53396 -1.01015,1.01015 0,0.33672 0.67344,0 1.01015,0 -0.33671,0.33672 -0.79719,0.58423 -1.01015,1.01015 -0.15058,0.30117 0,0.67344 0,1.01015 0,0.33672 -0.2381,0.77206 0,1.01016 0.2381,0.23809 0.77206,-0.2381 1.01015,0 0.2381,0.23809 0,0.67343 0,1.01015 0,0.33672 0.2381,0.77206 0,1.01015 -0.23809,0.2381 -0.67343,0 -1.01015,0"
+       id="path3765"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 112.12693,418.99653 c 1.68359,0.33672 3.3572,0.7279 5.05077,1.01016 0.33213,0.0554 0.67343,0 1.01015,0 1.68359,0 3.36717,0 5.05076,0 0.33672,0 0.77206,-0.2381 1.01015,0 0.2381,0.23809 -0.23809,0.77205 0,1.01015 0.47619,0.47619 1.54412,-0.47619 2.02031,0 0.23809,0.2381 -0.2381,0.77206 0,1.01015 0.47619,0.47619 1.54411,-0.47619 2.0203,0 0.2381,0.2381 -0.23809,0.77206 0,1.01016 0.47619,0.47619 1.54412,-0.4762 2.02031,0 0.23809,0.23809 -0.2381,0.77205 0,1.01015 0.47619,0.47619 1.41797,-0.30117 2.0203,0 0.42592,0.21296 0.58424,0.79719 1.01016,1.01015 0.60233,0.30117 1.54411,-0.47619 2.0203,0 0.2381,0.2381 -0.33672,1.01015 0,1.01015 0.47619,0 0.53396,-1.01015 1.01015,-1.01015 0.33672,0 -0.23809,0.77206 0,1.01015 0.2381,0.2381 0.67344,0 1.01016,0 0.33671,0 0.67343,0 1.01015,0 0.33672,0 0.67343,0 1.01015,0 0.33672,0 0.77206,-0.23809 1.01015,0 0.74318,0.74317 -1.28909,2.29925 1.01016,0"
+       id="path3767"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 205.71429,448.07647 60.71428,0"
+       id="path3790"
+       inkscape:connector-curvature="0" />
+    <path
+       transform="translate(63.044888,-13.974542)"
+       sodipodi:type="arc"
+       style="fill:#969696;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path2985-5-2"
+       sodipodi:cx="279.81226"
+       sodipodi:cy="462.43311"
+       sodipodi:rx="51.51778"
+       sodipodi:ry="47.477169"
+       d="m 331.33004,462.43311 a 51.51778,47.477169 0 1 1 -103.03556,0 51.51778,47.477169 0 1 1 103.03556,0 z"
+       inkscape:transform-center-x="108.08632"
+       inkscape:export-filename="/home/mikola/GitHub/mikolalysenko.github.com/Pictures/interiorboundary.png"
+       inkscape:export-xdpi="200.72389"
+       inkscape:export-ydpi="200.72389" />
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="283.05148"
+       y="531.76025"
+       id="text5393-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/mikola/GitHub/mikolalysenko.github.com/Pictures/interiorboundary.png"
+       inkscape:export-xdpi="200.72389"
+       inkscape:export-ydpi="200.72389"><tspan
+         sodipodi:role="line"
+         id="tspan5395-3"
+         x="283.05148"
+         y="531.76025">Closure(S)</tspan></text>
+  </g>
+</svg>

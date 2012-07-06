@@ -38,8 +38,13 @@ var cube_edges = new Int32Array([
 //Internal buffer
 var buffer = new Int32Array(0);
 
-return function(data, dims) {
+return {
 
+meshTransition: function(data0, dims0, bnd0, data1, dims1, bnd1) {
+  return { vertices:[], faces:[] };
+},
+
+meshVolume: function(data, dims) {
   var vertices = []
     , faces = []
     , n = 0
@@ -130,13 +135,14 @@ return function(data, dims) {
       }
     }
   }
-  
   return { vertices: vertices, faces: faces };
+}
+
 };
 })();
 
 
 if(exports) {
-  exports.mesher = DualContouring;
+  exports.meshVolume = DualContouring;
 }
 
