@@ -141,7 +141,7 @@ return function(volume, dims) {
       
       x[d]++;
       
-      //Generate a mesh for each polygon
+      //Now we just need to triangulate each monotone polygon
       for(var i=0; i<polygons.length; ++i) {
         var p = polygons[i]
           , c = p.color
