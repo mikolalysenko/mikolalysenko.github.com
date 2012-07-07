@@ -1,4 +1,8 @@
-function GreedyMesh(volume, dims) {
+var GreedyMesh = (function() {
+//Cache buffer internally
+var mask = new Int32Array(4096);
+
+return function(volume, dims) {
   function f(i,j,k) {
     return volume[i + dims[0] * (j + dims[1] * k)];
   }
@@ -9,8 +13,10 @@ function GreedyMesh(volume, dims) {
       , u = (d+1)%3
       , v = (d+2)%3
       , x = [0,0,0]
-      , q = [0,0,0]
-      , mask = new Int32Array(dims[u] * dims[v]);
+      , q = [0,0,0];
+    if(mask.length < dims[u] * dims[v]) {
+      mask = new Int32Array(dims[u] * dims[v]);
+    }
     q[d] = 1;
     for(x[d]=-1; x[d]<dims[d]; ) {
       //Compute mask
@@ -84,4 +90,9 @@ function GreedyMesh(volume, dims) {
     }
   }
   return { vertices:vertices, faces:faces };
+}
+})();
+
+if(exports) {
+  exports.mesher = GreedyMesh;
 }

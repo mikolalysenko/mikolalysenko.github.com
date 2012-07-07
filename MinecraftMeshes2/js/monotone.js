@@ -27,6 +27,15 @@ MonotonePolygon.prototype.merge_run = function(v, u_l, u_r) {
 };
 
 
+var x = new Int32Array(3)
+  , q = new Int32Array(3)
+  , runs = new Int32Array(2048)
+  , frontier = new Int32Array(2048)  //Frontier is list of pointers to polygons
+  , next_frontier = new Int32Array(1024)
+  , left_index = new Int32Array(2048)
+  , right_index = new Int32Array(2048)
+  , stack = new Int32Array(4096);
+
 return function(volume, dims) {
   function f(i,j,k) {
     return volume[i + dims[0] * (j + dims[1] * k)];
@@ -37,15 +46,27 @@ return function(volume, dims) {
     var i, j, k
       , u = (d+1)%3   //u and v are orthogonal directions to d
       , v = (d+2)%3
-      , x = new Int32Array(3)
-      , q = new Int32Array(3)
-      , runs = new Int32Array(2 * (dims[u]+1))
-      , frontier = new Int32Array(dims[u])  //Frontier is list of pointers to polygons
-      , next_frontier = new Int32Array(dims[u])
-      , left_index = new Int32Array(2 * dims[v])
-      , right_index = new Int32Array(2 * dims[v])
-      , stack = new Int32Array(24 * dims[v])
       , delta = [[0,0], [0,0]];
+        
+    if(runs.length < 2*(dims[u]+1)) {
+      runs = new Int32Array(2 * (dims[u]+1));
+    }
+    if(frontier.length < dims[u]) {
+      frontier = new Int32Array(dims[u]);
+    }
+    if(next_frontier.length < dims[u]) {
+      next_frontier = new Int32Array(dims[u]);
+    }
+    if(left_index.length < 2*dims[v]) {
+      left_index = new Int32Array(2 * dims[v]);
+    }
+    if(right_index.length < 2*dims[v]) {
+      right_index = new Int32Array(2 * dims[v]);
+    }
+    if(stack.length < 24*dims[v]) {
+      stack = new Int32Array(24 * dims[v]);
+    }
+    
     //q points along d-direction
     q[d] = 1;
     //Initialize sentinel
@@ -245,3 +266,7 @@ return function(volume, dims) {
   return { vertices:vertices, faces:faces };
 }
 })();
+
+if(exports) {
+  exports.mesher = MonotoneMesh;
+}

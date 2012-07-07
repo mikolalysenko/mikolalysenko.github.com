@@ -28,3 +28,7 @@ function StupidMesh(volume, dims) {
   return { vertices:vertices, faces:faces };
 }
 
+
+if(exports) {
+  exports.mesher = StupidMesh;
+}

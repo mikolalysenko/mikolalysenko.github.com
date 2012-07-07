@@ -48,6 +48,7 @@ function createTestData() {
     }
     return 1;
   });
+  
 
   result['Noise'] = makeVoxels([0,0,0], [16,16,16], function(i,j,k) {
     return Math.random() < 0.1 ? Math.random() * 0xffffff : 0;
@@ -80,8 +81,6 @@ function createTestData() {
     return (( 6 <= i && i < 10 && 2 <= j && j < 13) ||
       ( 2 <= i && i < 14 && 8 <= j && j < 13)) ? 0xcc00dd : 0;
   });
-  
-
   
   result['HollowCube'] = makeVoxels([0,0,0], [16,16,16], function(i,j,k) {
     if(i < 1) {
@@ -149,6 +148,11 @@ function createTestData() {
       return 0xee5533;
     }
     return 0x128844;
+  });
+  
+  result['Benchmark (SLOW!)'] = makeVoxels([-32, -32, -32], [33, 33, 33], function(x, y, z) {
+    var s = 2.0 * Math.PI / 32.0;
+    return Math.sin(s * x) + Math.sin(s * y) + Math.sin(s * z) < 0 ? 1 : 0;
   });
   
   result['Hill'] = makeVoxels([-16, 0, -16], [16,16,16], function(i,j,k) {

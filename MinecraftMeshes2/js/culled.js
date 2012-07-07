@@ -44,3 +44,7 @@ function CulledMesh(volume, dims) {
   return { vertices:vertices, faces:faces };
 }
 
+
+if(exports) {
+  exports.mesher = CulledMesh;
+}
