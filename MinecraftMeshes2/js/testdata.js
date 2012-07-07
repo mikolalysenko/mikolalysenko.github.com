@@ -25,10 +25,15 @@ function createTestData() {
   ];
   
   
-  result['Diagonal'] = makeVoxels([0,0,0],[1,2,2], function(i,j,k) {
-    return (j+k)&1 ? 1 : 0xffffff;
-  });
   
+  for(var i=1,c=0; i<=16; i<<=1,++c) {
+    result[i + 'x' + i + 'x' + i] = makeVoxels([0,0,0], [i,i,i], function() { return colorTab[c]; });
+  }
+  
+  result['Sphere'] = makeVoxels([-16,-16,-16], [16,16,16], function(i,j,k) {
+    return i*i+j*j+k*k <= 16*16 ? 0x113344 : 0;
+  });
+
   result['I-Shape'] = makeVoxels([0,-1,-1], [1,2,2], function(i,j,k) {
     if((j === -1 && k === 0) ||
        (j ===  1 && k === 0) ) {
@@ -37,20 +42,11 @@ function createTestData() {
     return 1;
   });
   
-  
-  result['TinyBoss'] = makeVoxels([-1,-1,-1],[1,2,2], function(i,j,k) {
+  result['Tiny Button'] = makeVoxels([-1,-1,-1],[1,2,2], function(i,j,k) {
     if(i === 0) {
       return (j === 0 && k === 0) ? 0xff0000 : 0;
     }
     return 1;
-  });
-  
-  for(var i=1,c=0; i<=16; i<<=1,++c) {
-    result[i + 'x' + i + 'x' + i] = makeVoxels([0,0,0], [i,i,i], function() { return colorTab[c]; });
-  }
-  
-  result['Sphere'] = makeVoxels([-16,-16,-16], [16,16,16], function(i,j,k) {
-    return i*i+j*j+k*k <= 16*16 ? 0x113344 : 0;
   });
 
   result['Noise'] = makeVoxels([0,0,0], [16,16,16], function(i,j,k) {
