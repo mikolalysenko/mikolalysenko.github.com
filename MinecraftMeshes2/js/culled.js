@@ -8,7 +8,8 @@ function CulledMesh(volume, dims) {
     dir[i][1][(i+2)%3] = 1;
   }
   //March over the volume
-  var quads = []
+  var vertices = []
+    , faces = []
     , x = [0,0,0]
     , B = [[false,true]    //Incrementally update bounds (this is a bit ugly)
           ,[false,true]
@@ -31,15 +32,15 @@ function CulledMesh(volume, dims) {
         , u = dir[d][s]
         , v = dir[d][s^1];
       ++t[d];
-      quads.push([
-          [t[0],           t[1],           t[2]          ]
-        , [t[0]+u[0],      t[1]+u[1],      t[2]+u[2]     ]
-        , [t[0]+u[0]+v[0], t[1]+u[1]+v[1], t[2]+u[2]+v[2]]
-        , [t[0]     +v[0], t[1]     +v[1], t[2]     +v[2]]
-        , s ? b[d] : p
-      ]);
+      
+      var vertex_count = vertices.length;
+      vertices.push([t[0],           t[1],           t[2]          ]);
+      vertices.push([t[0]+u[0],      t[1]+u[1],      t[2]+u[2]     ]);
+      vertices.push([t[0]+u[0]+v[0], t[1]+u[1]+v[1], t[2]+u[2]+v[2]]);
+      vertices.push([t[0]     +v[0], t[1]     +v[1], t[2]     +v[2]]);
+      faces.push([vertex_count, vertex_count+1, vertex_count+2, vertex_count+3, s ? b[d] : p]);
     }
   }
-  return quads;
+  return { vertices:vertices, faces:faces };
 }
 

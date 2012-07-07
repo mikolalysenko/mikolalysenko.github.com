@@ -24,6 +24,27 @@ function createTestData() {
     0xffffff
   ];
   
+  
+  result['Diagonal'] = makeVoxels([0,0,0],[1,2,2], function(i,j,k) {
+    return (j+k)&1 ? 1 : 0xffffff;
+  });
+  
+  result['I-Shape'] = makeVoxels([0,-1,-1], [1,2,2], function(i,j,k) {
+    if((j === -1 && k === 0) ||
+       (j ===  1 && k === 0) ) {
+      return 0;   
+    }
+    return 1;
+  });
+  
+  
+  result['TinyBoss'] = makeVoxels([-1,-1,-1],[1,2,2], function(i,j,k) {
+    if(i === 0) {
+      return (j === 0 && k === 0) ? 0xff0000 : 0;
+    }
+    return 1;
+  });
+  
   for(var i=1,c=0; i<=16; i<<=1,++c) {
     result[i + 'x' + i + 'x' + i] = makeVoxels([0,0,0], [i,i,i], function() { return colorTab[c]; });
   }
@@ -64,6 +85,7 @@ function createTestData() {
       ( 2 <= i && i < 14 && 8 <= j && j < 13)) ? 0xcc00dd : 0;
   });
   
+
   
   result['HollowCube'] = makeVoxels([0,0,0], [16,16,16], function(i,j,k) {
     if(i < 1) {
@@ -130,7 +152,7 @@ function createTestData() {
         (i == 2 && j == 3) ) {
       return 0xee5533;
     }
-    return 0;
+    return 0x128844;
   });
   
   result['Hill'] = makeVoxels([-16, 0, -16], [16,16,16], function(i,j,k) {

@@ -20,6 +20,7 @@
     <script src="js/stupid.js"></script>
     <script src="js/culled.js"></script>
     <script src="js/greedy.js"></script>
+    <script src="js/monotone.js"></script>
 
     <script src="js/testdata.js"></script>
 
@@ -43,7 +44,8 @@
 	    <p><select id="mesher"></select></p>
 	    <p>Show faces: <input type="checkbox" id="showfacets" value="checked" /></p>
 	    <p>Show edges: <input type="checkbox" id="showedges" value="checked" /></p>
-	    <p>Face count: <input type="text" id="quadcount" value="0" /> </p>	    	
+	    <p>Vertex count: <input type="text" id="vertcount" value="0" /> </p>	    	
+	    <p>Face count: <input type="text" id="facecount" value="0" /> </p>	    	
 	  </div> 
 	</div> 
 	
@@ -55,6 +57,7 @@
 		    'Stupid': StupidMesh
 		  , 'Culled': CulledMesh
 		  , 'Greedy': GreedyMesh
+		  , 'Monotone': MonotoneMesh
 		};
 		var testdata = {};
 		
@@ -68,27 +71,29 @@
 		  var mesher = meshers[ document.getElementById("mesher").value ]
 		    , data   = testdata[ document.getElementById("datasource").value ]
         , result = mesher( data.voxels, data.dims );
-      document.getElementById("quadcount").value = result.length;
+      document.getElementById("vertcount").value = result.vertices.length;
+      document.getElementById("facecount").value = result.faces.length;
       geometry.vertices.length = 0;
       geometry.faces.length = 0;
-      for(var i=0; i<result.length; ++i) {
-        var q = result[i]
-          , n = geometry.vertices.length;
-        for(var j=0; j<q.length-1; ++j) {
-          geometry.vertices.push(new THREE.Vector3(q[j][0], q[j][1], q[j][2]));
-        }
-        if(q.length == 5) {
-          var f = new THREE.Face4(n, n+1, n+2, n+3);
+      for(var i=0; i<result.vertices.length; ++i) {
+        var q = result.vertices[i];
+        geometry.vertices.push(new THREE.Vector3(q[0], q[1], q[2]));
+      }
+      for(var i=0; i<result.faces.length; ++i) {
+        var q = result.faces[i];
+        if(q.length === 5) {
+          var f = new THREE.Face4(q[0], q[1], q[2], q[3]);
           f.color = new THREE.Color(q[4]);
           f.vertexColors = [f.color,f.color,f.color,f.color];
           geometry.faces.push(f);
         } else if(q.length == 4) {
-          var f = new THREE.Face3(n, n+1, n+2);
+          var f = new THREE.Face3(q[0], q[1], q[2]);
           f.color = new THREE.Color(q[3]);
           f.vertexColors = [f.color,f.color,f.color];
           geometry.faces.push(f);
         }
       }
+      
       geometry.computeFaceNormals();
       
       geometry.verticesNeedUpdate = true;

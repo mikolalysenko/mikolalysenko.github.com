@@ -3,7 +3,7 @@ function GreedyMesh(volume, dims) {
     return volume[i + dims[0] * (j + dims[1] * k)];
   }
   //Sweep over 3-axes
-  var quads = [];
+  var vertices = [], faces = [];
   for(var d=0; d<3; ++d) {
     var i, j, k, l, w, h
       , u = (d+1)%3
@@ -63,13 +63,13 @@ function GreedyMesh(volume, dims) {
             du[v] = h;
             dv[u] = w;
           }
-          quads.push([
-              [x[0],             x[1],             x[2]            ]
-            , [x[0]+du[0],       x[1]+du[1],       x[2]+du[2]      ]
-            , [x[0]+du[0]+dv[0], x[1]+du[1]+dv[1], x[2]+du[2]+dv[2]]
-            , [x[0]      +dv[0], x[1]      +dv[1], x[2]      +dv[2]]
-            , c
-          ]);
+          var vertex_count = vertices.length;
+          vertices.push([x[0],             x[1],             x[2]            ]);
+          vertices.push([x[0]+du[0],       x[1]+du[1],       x[2]+du[2]      ]);
+          vertices.push([x[0]+du[0]+dv[0], x[1]+du[1]+dv[1], x[2]+du[2]+dv[2]]);
+          vertices.push([x[0]      +dv[0], x[1]      +dv[1], x[2]      +dv[2]]);
+          faces.push([vertex_count, vertex_count+1, vertex_count+2, vertex_count+3, c]);
+          
           //Zero-out mask
           for(l=0; l<h; ++l)
           for(k=0; k<w; ++k) {
@@ -83,5 +83,5 @@ function GreedyMesh(volume, dims) {
       }
     }
   }
-  return quads;
+  return { vertices:vertices, faces:faces };
 }
