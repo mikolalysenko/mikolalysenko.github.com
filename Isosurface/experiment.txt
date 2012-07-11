@@ -35,7 +35,7 @@ mc:
 
 
 
-dc (no precalc):
+sn (no precalc):
 
 0, 26.79
 1, 33.95
@@ -53,7 +53,7 @@ dc (no precalc):
 
 
 
-dc (w/ edge precalculation):
+sn (w/ edge precalculation):
 
 0, 24.06
 1, 29.42
@@ -93,7 +93,7 @@ Mesh sizes:
 vertices/faces:
 
 
-dc:
+sn:
 
 0, 0
 7759, 7569

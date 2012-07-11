@@ -7,7 +7,7 @@
  *
  * Based on: S.F. Gibson, "Constrained Elastic Surface Nets". (1998) MERL Tech Report.
  */
-var SurfaceNet = (function() {
+var SurfaceNets= (function() {
 
 //Precompute edge tables.
 // This saves a bit of time when computing the centroid of each boundary cell
@@ -139,6 +139,6 @@ return function(data, dims) {
 
 
 if(exports) {
-  exports.mesher = SurfaceNet;
+  exports.mesher = DualContouring;
 }
 

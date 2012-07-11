@@ -1,5 +1,13 @@
-"use strict";
-var DualContouring = (function() {
+/**
+ * SurfaceNets in JavaScript
+ *
+ * Written by Mikola Lysenko (C) 2012
+ *
+ * MIT License, Free to use, but give credit.
+ *
+ * Based on: S.F. Gibson, "Constrained Elastic Surface Nets". (1998) MERL Tech Report.
+ */
+var SurfaceNets = (function() {
 
 var cube_vertices = [
       [0,0,0]
@@ -119,7 +127,7 @@ return function(data, dims) {
 
 
 if(exports) {
-  exports.mesher = DualContouring;
+  exports.mesher = SurfaceNets;
 }
 
 
