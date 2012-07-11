@@ -3,22 +3,16 @@
  *
  * Written by Mikola Lysenko (C) 2012
  *
- * MIT License, Free to use, but give credit.
+ * MIT License
  *
  * Based on: S.F. Gibson, "Constrained Elastic Surface Nets". (1998) MERL Tech Report.
  */
+"use strict";
 var SurfaceNets = (function() {
 
-var cube_vertices = [
-      [0,0,0]
-    , [1,0,0]
-    , [0,1,0]
-    , [1,1,0]
-    , [0,0,1]
-    , [1,0,1]
-    , [0,1,1]
-    , [1,1,1] ]
- , cube_edges = new Int32Array([
+//Precompute edge table, like Paul Bourke does.
+// This saves a bit of time when computing the centroid of each boundary cell
+var cube_edges = new Int32Array([
       0, 1
     , 0, 2
     , 0, 4
@@ -30,18 +24,29 @@ var cube_vertices = [
     , 4, 5
     , 4, 6
     , 5, 7
-    , 6, 7 ]);
+    , 6, 7 ])
+  , edge_table = new Int32Array(256);
+(function() {
+  for(var i=0; i<256; ++i) {
+    var em = 0;
+    for(var j=0; j<24; j+=2) {
+      var a = !!(i & (1<<cube_edges[j]))
+        , b = !!(i & (1<<cube_edges[j+1]));
+      em |= a !== b ? (1 << (j >> 1)) : 0;
+    }
+    edge_table[i] = em;
+  }
+})();
 
 //Internal buffer
 var buffer = new Int32Array(4096);
 
 return function(data, dims) {
-
+  
   var vertices = []
     , faces = []
     , n = 0
     , x = new Int32Array(3)
-    , d = new Int32Array(3)
     , R = new Int32Array([1, (dims[0]+1), (dims[0]+1)*(dims[0]+1)])
     , grid = new Float32Array(8)
     , buf_no = 1;
@@ -63,71 +68,73 @@ return function(data, dims) {
       for(var j=0; j<2; ++j, idx += dims[0]-2)      
       for(var i=0; i<2; ++i, ++g, ++idx) {
         var p = data[idx];
-        mask |= (p < 0) ? (1 << g) : 0;
         grid[g] = p;
+        mask |= (p < 0) ? (1<<g) : 0;
       }
       
-      //If cell is not on boundary, skip it
-      if((mask === 0) || (mask === 0xff)) {
+      //Check edge mask
+      if(mask === 0 || mask === 0xff) {
         continue;
       }
-      buffer[m] = vertices.length;
-
-      //Compute vertex and face
-      var v = [0,0,0], e_count = 0;
-      for(var i=0; i<24; i+=2) {
-        var e0 = cube_edges[i]
-          , e1 = cube_edges[i+1]
-          , s0 = !!(mask & (1 << e0))
-          , s1 = !!(mask & (1 << e1));
-        //Check for 0-crossing
-        if( s0 === s1 ) {
-          continue; 
+      var edge_mask = edge_table[mask];
+      
+      //Sum up edge intersections
+      var v = [0.0,0.0,0.0], e_count = 0;
+      for(var i=0; i<12; ++i) {
+        if(!(edge_mask & (1<<i))) {
+          continue;
         }
-        //Add face
-        var iu = ((i>>1)+1)%3
-          , iv = ((i>>1)+2)%3;
-        if(i < 6 && x[iu] > 0 && x[iv] > 0) {
-          var du = R[iu]
-            , dv = R[iv];
-          if(mask & 1) {
-            faces.push([buffer[m], buffer[m-du], buffer[m-du-dv], buffer[m-dv]]);
-          } else {
-            faces.push([buffer[m], buffer[m-dv], buffer[m-du-dv], buffer[m-du]]);
-          }
-        }
-        //Find edge intersections
         ++e_count;
-        var p0 = cube_vertices[e0]
-          , p1 = cube_vertices[e1]
+        var e0 = cube_edges[ i<<1 ]
+          , e1 = cube_edges[(i<<1)+1]
           , g0 = grid[e0]
           , g1 = grid[e1]
           , t  = g0 - g1;
         if(Math.abs(t) > 1e-6) {
           t = g0 / t;
         } else {
-          t = 0.0;
+          continue;
         }
-        for(var j=0; j<3; ++j) {
-          v[j] = (v[j] + p0[j]) + t * (p1[j] - p0[j]);
+        for(var j=0, k=1; j<3; ++j, k<<=1) {
+          var a = e0 & k
+            , b = e1 & k;
+          if(a !== b) {
+            v[j] += a ? 1.0 - t : t;
+          } else {
+            v[j] += a ? 1.0 : 0;
+          }
         }
       }
-      //Add vertex to list
+      
+      //Average edge intersections to get vertex
       var s = 1.0 / e_count;
       for(var i=0; i<3; ++i) {
         v[i] = x[i] + s * v[i];
       }
+      buffer[m] = vertices.length;
       vertices.push(v);
+      
+      //Connect faces together
+      for(var i=0; i<3; ++i) {
+        if(!(edge_mask & (1<<i)) ) {
+          continue;
+        }
+        var iu = (i+1)%3
+          , iv = (i+2)%3
+        if(x[iu] === 0 || x[iv] === 0) {
+          continue;
+        }
+        var du = R[iu]
+          , dv = R[iv];
+        if(mask & 1) {
+          faces.push([buffer[m], buffer[m-du], buffer[m-du-dv], buffer[m-dv]]);
+        } else {
+          faces.push([buffer[m], buffer[m-dv], buffer[m-du-dv], buffer[m-du]]);
+        }
+      }
     }
   }
   
   return { vertices: vertices, faces: faces };
 };
 })();
-
-
-if(exports) {
-  exports.mesher = SurfaceNets;
-}
-
-
