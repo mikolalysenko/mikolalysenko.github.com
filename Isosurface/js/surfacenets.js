@@ -12,21 +12,20 @@ var SurfaceNets = (function() {
 
 //Precompute edge table, like Paul Bourke does.
 // This saves a bit of time when computing the centroid of each boundary cell
-var cube_edges = new Int32Array([
-      0, 1
-    , 0, 2
-    , 0, 4
-    , 1, 3
-    , 1, 5
-    , 2, 3
-    , 2, 6
-    , 3, 7
-    , 4, 5
-    , 4, 6
-    , 5, 7
-    , 6, 7 ])
+var cube_edges = new Int32Array(24)
   , edge_table = new Int32Array(256);
 (function() {
+  var k = 0;
+  for(var i=0; i<8; ++i) {
+    for(var j=1; j<=4; j<<=1) {
+      var p = i^j;
+      if(i <= p) {
+        cube_edges[k++] = i;
+        cube_edges[k++] = p;
+      }
+    }
+  }
+
   for(var i=0; i<256; ++i) {
     var em = 0;
     for(var j=0; j<24; j+=2) {
@@ -38,7 +37,7 @@ var cube_edges = new Int32Array([
   }
 })();
 
-//Internal buffer
+//Internal buffer, this may get resized at run time
 var buffer = new Int32Array(4096);
 
 return function(data, dims) {
