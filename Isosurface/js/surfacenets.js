@@ -30,8 +30,8 @@ var cube_edges = new Int32Array(24)
   }
 
   //Initialize the intersection table.
-  //  This is 2^(cube configuration) ->  2^(edge configuration) map
-  //  There is one entry for each possible intersection configuration, and the output is a 12-bit vector enumerating all edges intersecting the cube.
+  //  This is a 2^(cube configuration) ->  2^(edge configuration) map
+  //  There is one entry for each possible cube configuration, and the output is a 12-bit vector enumerating all edges crossing the 0-level.
   for(var i=0; i<256; ++i) {
     var em = 0;
     for(var j=0; j<24; j+=2) {
