@@ -133,9 +133,61 @@ window.saveAs = window.saveAs
 
 
 function initializeCanvases() {
+  var repaint_handlers = []
+    , contexts = [];
 
+  var current_mouse = [-1,-1,-1];
 
-  var repaint_handlers = [];
+  function updateMouse(nmouse) {
+    //Check for update
+    var nochange = true;
+    for(var i=0; i<3; ++i) {
+      if(current_mouse[i] != nmouse[i]) {
+        nochange = false;
+        break;
+      }
+    }
+    if(nochange) {
+      return;
+    }
+    
+    current_mouse[0] = nmouse[0];
+    current_mouse[1] = nmouse[1];
+    current_mouse[2] = nmouse[2];
+
+    //Repaint screen     
+    for(var i=0; i<6; ++i) {
+      repaint_handlers[i]();
+    }
+    if(nmouse[0] < 0) {
+      return;
+    }
+    
+    
+    var mat = buffer_xform[nmouse[2]]
+      , ray = [-1,-1,-1]
+      , u = ((nmouse[2]>>1)+1)%3
+      , v = ((nmouse[2]>>1)+2)%3;
+    ray[u] = nmouse[0];
+    ray[v] = nmouse[1];
+    
+    /*
+    for(var i=0; i<6; ++i) {      
+      
+      //Draw box
+      var ctx = contexts[i];
+      ctx.fillStyle = '#FF0000';
+      var a = ((i>>1)+1)%3
+        , b = ((i>>1)+2)%3
+        , iu = ray[a]
+        , iv = ray[b];
+      ctx.fillRect( iu<0 ? 0 : iu*image_scale
+                  , iv<0 ? 0 : iv*image_scale
+                  , iu<0 ? dims[a]*image_scale+1 : image_scale+1
+                  , iv<0 ? dims[b]*image_scale+1 : image_scale+1);
+    }
+    */
+  }
 
   for(var i=0; i<6; ++i) 
   (function() {
@@ -148,6 +200,7 @@ function initializeCanvases() {
     canvas.width = dims[u] * image_scale + 1;
     canvas.height = dims[v] * image_scale + 1;
     
+    var index = i;
     
     //Create view data buffer
     var buffer = new Int32Array(dims[u] * dims[v]);
@@ -158,6 +211,7 @@ function initializeCanvases() {
 
     //Initialize context
     var ctx = canvas.getContext("2d");
+    contexts.push(ctx);
     
     //Do repaint
     function repaint() {
@@ -181,11 +235,11 @@ function initializeCanvases() {
     function mouseHandler(ev) {
       var x = ev.offsetX
         , y = ev.offsetY        
-        , i = Math.floor((x-1) / image_scale)
-        , j = Math.floor((y-1) / image_scale)
-        , a = mat[0] * j + mat[1] * i
-        , b = mat[2] * j + mat[3] * i
-        , idx = a + b * dims[u];
+        , u = Math.floor((x-1) / image_scale)
+        , v = Math.floor((y-1) / image_scale)
+        , idx = u + v * dims[u]
+        , a = mat[0] * u + mat[1] * v
+        , b = mat[2] * u + mat[3] * v;
         
       if(ev.which & 1) {
         var paint_color = document.getElementById("paintColor").value
@@ -193,7 +247,7 @@ function initializeCanvases() {
         if(buffer[idx] !== paint_value) {
           buffer[idx] = paint_value;
           ctx.fillStyle = '#' + paint_color;
-          ctx.fillRect(i*image_scale+1, j*image_scale+1, image_scale-1, image_scale-1);
+          ctx.fillRect(a*image_scale+1, b*image_scale+1, image_scale-1, image_scale-1);
         }
       }
       if(ev.which & 2) {
@@ -201,9 +255,14 @@ function initializeCanvases() {
         document.getElementById("paintColor").color.fromRGB(((c>>16)&0xff)/255.0, ((c>>8)&0xff)/255.0, (c&0xff)/255.0);
         return true;
       }
+      
+      //updateMouse([u, v, index]);
     }
     canvas.addEventListener('mousemove', mouseHandler, false);
     canvas.addEventListener('mousedown', mouseHandler, false);
+    canvas.addEventListener('mouseleave', function() {
+      updateMouse([-1,-1,-1]);
+    }, false);
     
   })();
   
