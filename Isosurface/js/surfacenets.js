@@ -101,8 +101,10 @@ return function(data, dims) {
           continue;
         }
         
-        //Increment number of edges
+        //If it did, increment number of edge crossings
         ++e_count;
+        
+        //Now find the point of intersection
         var e0 = cube_edges[ i<<1 ]       //Unpack vertices
           , e1 = cube_edges[(i<<1)+1]
           , g0 = grid[e0]                 //Unpack grid values
@@ -114,7 +116,7 @@ return function(data, dims) {
           continue;
         }
         
-        //Find intersection vertex and sum
+        //Interpolate vertices and add up intersections (this can be done without multiplying)
         for(var j=0, k=1; j<3; ++j, k<<=1) {
           var a = e0 & k
             , b = e1 & k;
@@ -126,7 +128,7 @@ return function(data, dims) {
         }
       }
       
-      //Average edge intersections to get vertex
+      //Now we just average the edge intersections and add them to coordinate
       var s = 1.0 / e_count;
       for(var i=0; i<3; ++i) {
         v[i] = x[i] + s * v[i];
