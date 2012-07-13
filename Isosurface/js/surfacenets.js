@@ -7,8 +7,8 @@
  *
  * Based on: S.F. Gibson, "Constrained Elastic Surface Nets". (1998) MERL Tech Report.
  */
-"use strict";
 var SurfaceNets = (function() {
+"use strict";
 
 //Precompute edge table, like Paul Bourke does.
 // This saves a bit of time when computing the centroid of each boundary cell
