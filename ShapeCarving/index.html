@@ -62,10 +62,8 @@
         </tr>
       </table>
       <p> Paint: <input class="color" id="paintColor" value="ffffff"/> </p>
-      <p> Transparent: <input class="color" id="maskColor" value="000000"/> </p>
       <p> <input type="button" id="clearSelected" value="Clear Selected" />  Show Guides: <input type="checkbox" id="showGuides" checked="checked" /> </p>
       <p>
-        <input type="button" id="updateModel" value="Update"/> 
         <input type="button" id="saveImage" value="Save Image" />
         <input type="button" id="loadImage" value="Load Image" />
         <input type="button" id="exportMesh" value="Export Mesh" />
@@ -77,6 +75,7 @@
 (function() {
 var stats, scene, renderer, composer;
 var camera, cameraControl;
+var mask_color = 0;
 var geometry, surfacemesh, mesher = GreedyMesh;
 var view_names = [  "leftCanvas"
                   , "rightCanvas"
@@ -92,18 +91,18 @@ var select_names = [ "leftSelect"
                   , "backSelect" ];
 
 var buffer_xform = [
+  [ 0, 1,
+    1, 0],
+  [ 0, 1,
+    1, 0],
   [ 1, 0,
     0, 1],
   [ 1, 0,
     0, 1],
-  [ 0, 1,
-    1, 0],
-  [ 0, 1,
-    1, 0],
-  [ 0, 1,
-    1, 0],
-  [ 0, 1,
-    1, 0]    
+  [ 1, 0,
+    0, 1],
+  [ 1, 0,
+    0, 1]    
 ];
 var view_data = [];
 var dims = new Int32Array([16, 16, 16])
@@ -134,71 +133,101 @@ window.saveAs = window.saveAs
 
 function initializeCanvases() {
   var repaint_handlers = []
-    , contexts = [];
+    , contexts = []
+    , canvases = [];
 
-  var current_mouse = [-1,-1,-1];
-
+  var current_mouse = [-1,-1,-1]
+    , mouse_box = new THREE.Mesh(new THREE.CubeGeometry(1,1,1)
+                    , new THREE.MeshBasicMaterial({
+                          color: 0xff0000
+                        , wireframe: true
+                    }));
+  
+  scene.add(mouse_box);
+  mouse_box.visible = false;
+  
   function updateMouse(nmouse) {
+  
     //Check for update
-    var nochange = true;
-    for(var i=0; i<3; ++i) {
-      if(current_mouse[i] != nmouse[i]) {
-        nochange = false;
-        break;
+    if(nmouse) {
+      var nochange = true;
+      for(var i=0; i<3; ++i) {
+        if(current_mouse[i] != nmouse[i]) {
+          nochange = false;
+          break;
+        }
+      }
+      current_mouse[0] = nmouse[0];
+      current_mouse[1] = nmouse[1];
+      current_mouse[2] = nmouse[2];
+      if(nochange) {
+        return;
       }
     }
-    if(nochange) {
-      return;
-    }
-    
-    current_mouse[0] = nmouse[0];
-    current_mouse[1] = nmouse[1];
-    current_mouse[2] = nmouse[2];
 
     //Repaint screen     
     for(var i=0; i<6; ++i) {
-      repaint_handlers[i]();
+      contexts[i].fillStyle = '#ffffff';
+      contexts[i].fillRect(0, 0, canvases[i].width, canvases[i].height);
     }
-    if(nmouse[0] < 0) {
+    
+    if(current_mouse[0] < 0) {
+      for(var i=0; i<6; ++i) {
+        repaint_handlers[i]();
+      }
+      mouse_box.visible = false;
       return;
     }
     
-    
-    var mat = buffer_xform[nmouse[2]]
+    var mat = buffer_xform[current_mouse[2]]
       , ray = [-1,-1,-1]
-      , u = ((nmouse[2]>>1)+1)%3
-      , v = ((nmouse[2]>>1)+2)%3;
-    ray[u] = nmouse[0];
-    ray[v] = nmouse[1];
+      , u = ((current_mouse[2]>>1)+1)%3
+      , v = ((current_mouse[2]>>1)+2)%3;
+    ray[u] = mat[0] * current_mouse[0] + mat[2] * current_mouse[1];
+    ray[v] = mat[1] * current_mouse[0] + mat[3] * current_mouse[1];
     
-    /*
     for(var i=0; i<6; ++i) {      
       
       //Draw box
+      var Q = buffer_xform[i];
       var ctx = contexts[i];
       ctx.fillStyle = '#FF0000';
       var a = ((i>>1)+1)%3
         , b = ((i>>1)+2)%3
-        , iu = ray[a]
-        , iv = ray[b];
+        , iu = Q[0] * ray[a] + Q[1] * ray[b]
+        , iv = Q[2] * ray[a] + Q[3] * ray[b];
       ctx.fillRect( iu<0 ? 0 : iu*image_scale
                   , iv<0 ? 0 : iv*image_scale
                   , iu<0 ? dims[a]*image_scale+1 : image_scale+1
                   , iv<0 ? dims[b]*image_scale+1 : image_scale+1);
     }
-    */
+    
+    for(var i=0; i<6; ++i) {
+      repaint_handlers[i]();
+    }
+    
+    
+    mouse_box.scale.x = ray[0]<0 ? dims[0] : 1;
+    mouse_box.scale.y = ray[1]<0 ? dims[1] : 1;
+    mouse_box.scale.z = ray[2]<0 ? dims[2] : 1;
+    
+    mouse_box.position.x = (ray[0]>=0 ? ray[0] - dims[0]/2 + 0.5: 0);
+    mouse_box.position.y = (ray[1]>=0 ? ray[1] - dims[1]/2 + 0.5: 0);
+    mouse_box.position.z = (ray[2]>=0 ? ray[2] - dims[2]/2 + 0.5: 0);
+    
+    mouse_box.visible = true;
   }
 
   for(var i=0; i<6; ++i) 
   (function() {
-    var mask_color = parseInt(document.getElementById("maskColor").value, 16)
-      , d = i >> 1
+    var d = i >> 1
       , u = (d+1) % 3
       , v = (d+2) % 3
       , mat = buffer_xform[i]
       , canvas = document.getElementById(view_names[i]);
     canvas.width = dims[u] * image_scale + 1;
     canvas.height = dims[v] * image_scale + 1;
+    canvases.push(canvas);
     
     var index = i;
     
@@ -215,17 +244,14 @@ function initializeCanvases() {
     
     //Do repaint
     function repaint() {
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-
       for(var j=0, n=0; j<dims[v]; ++j)
-      for(var k=0; k<dims[u]; ++k, ++n) {
-        ctx.fillStyle = 'rgb(' + ((buffer[n]>>16)&0xff) + ',' + ((buffer[n]>>8)&0xff) + ',' + ((buffer[n])&0xff) + ')';
-        
-        var a = mat[0] * j + mat[1] * k
-          , b = mat[2] * j + mat[3] * k;
-        ctx.fillRect(a*image_scale+1, b*image_scale+1, image_scale-1, image_scale-1);
+      for(var k=0; k<dims[u]; ++k) {
+        var a = mat[0] * k + mat[1] * j
+          , b = mat[2] * k + mat[3] * j
+          , c = buffer[a + b * dims[u]];
+      
+        ctx.fillStyle = 'rgb(' + ((c>>16)&0xff) + ',' + ((c>>8)&0xff) + ',' + (c&0xff) + ')';
+        ctx.fillRect(k*image_scale+1, j*image_scale+1, image_scale-1, image_scale-1);
       }
     };
     repaint();
@@ -235,19 +261,25 @@ function initializeCanvases() {
     function mouseHandler(ev) {
       var x = ev.offsetX
         , y = ev.offsetY        
-        , u = Math.floor((x-1) / image_scale)
-        , v = Math.floor((y-1) / image_scale)
-        , idx = u + v * dims[u]
-        , a = mat[0] * u + mat[1] * v
-        , b = mat[2] * u + mat[3] * v;
-        
+        , ix = Math.floor((x-1) / image_scale)
+        , iy = Math.floor((y-1) / image_scale)
+        , a = mat[0] * ix + mat[1] * iy
+        , b = mat[2] * ix + mat[3] * iy
+        , idx = a + b * dims[u];
+      
+      if(ix < 0 || iy < 0) {
+        updateMouse([-1,-1,-1]);
+        return;
+      }
+      
       if(ev.which & 1) {
         var paint_color = document.getElementById("paintColor").value
           , paint_value = parseInt(paint_color, 16)
         if(buffer[idx] !== paint_value) {
           buffer[idx] = paint_value;
           ctx.fillStyle = '#' + paint_color;
-          ctx.fillRect(a*image_scale+1, b*image_scale+1, image_scale-1, image_scale-1);
+          ctx.fillRect(ix*image_scale+1, iy*image_scale+1, image_scale-1, image_scale-1);
+          updateMesh();
         }
       }
       if(ev.which & 2) {
@@ -256,14 +288,16 @@ function initializeCanvases() {
         return true;
       }
       
-      //updateMouse([u, v, index]);
+      updateMouse([ix, iy, index]);
     }
     canvas.addEventListener('mousemove', mouseHandler, false);
     canvas.addEventListener('mousedown', mouseHandler, false);
     canvas.addEventListener('mouseleave', function() {
       updateMouse([-1,-1,-1]);
     }, false);
-    
+    canvas.addEventListener('mouseout', function() {
+      updateMouse([-1,-1,-1]);
+    }, false);    
   })();
   
   
@@ -309,9 +343,7 @@ function initializeCanvases() {
   }, false);
   
   fullRepaint = function() {
-    for(var i=0; i<6; ++i) {
-      repaint_handlers[i]();
-    }
+    updateMouse();
     updateMesh();
   };
   
@@ -357,8 +389,7 @@ function initializeCanvases() {
     }
     
     //Compute new volume from partial views
-    var mask_color = parseInt(document.getElementById('maskColor').value, 16)
-      , volume = ShapeCarve(
+    var volume = ShapeCarve(
           dims
         , view_data
         , mask_color
@@ -385,7 +416,7 @@ function initializeCanvases() {
           aview[n] = mask_color;
           for(x[d]=start; 0<=x[d] && x[d]<dims[d]; x[d]+=step) {
             var c = volume[x[0] + dims[0] * (x[1] + dims[1] * x[2])];
-            if(c !== mask_color) {
+            if(c !== mask_color && c !== 0xff00ff) {
               aview[n] = c;
               break;
             }
@@ -409,11 +440,11 @@ function updateMesh() {
   
   geometry	= new THREE.Geometry();		
 
-  //Run shape carving
+  //Run shape carving1
   var volume = ShapeCarve(
         dims
       , view_data
-      , parseInt(document.getElementById('maskColor').value, 16)
+      , mask_color
       , [ false, false, false, false, false, false ] )
     , result = GreedyMesh(volume.volume, volume.dims);
 
@@ -438,17 +469,8 @@ function updateMesh() {
     }
   }
   
-  geometry.computeFaceNormals();
-  
   geometry.verticesNeedUpdate = true;
   geometry.elementsNeedUpdate = true;
-  geometry.normalsNeedUpdate = true;
-  
-  geometry.computeBoundingBox();
-  geometry.computeBoundingSphere();
-  
-  var bb = geometry.boundingBox;
-
   
    //Create surface mesh
   var material	= new THREE.MeshBasicMaterial({
@@ -457,9 +479,9 @@ function updateMesh() {
   surfacemesh	= new THREE.Mesh( geometry, material );
   surfacemesh.doubleSided = false;
 
-  surfacemesh.position.x = -(bb.max.x + bb.min.x) / 2.0;
-  surfacemesh.position.y = -(bb.max.y + bb.min.y) / 2.0;
-  surfacemesh.position.z = -(bb.max.z + bb.min.z) / 2.0;
+  surfacemesh.position.x = -dims[0] / 2.0;
+  surfacemesh.position.y = -dims[1] / 2.0;
+  surfacemesh.position.z = -dims[2] / 2.0;
   
   scene.add( surfacemesh );
 }
@@ -495,7 +517,7 @@ function init(){
 
   // put a camera in the scene
   camera	= new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000 );
-  camera.position.set(0, 0, 40);
+  camera.position.set(0, 0, -40);
   scene.add(camera);
 
   // create a camera contol
@@ -531,7 +553,6 @@ function init(){
   
   updateMesh();
   
-  document.getElementById("updateModel").addEventListener("click", updateMesh, false);
   document.getElementById("clearSelected").addEventListener("click", clearSelected, false);
 
   return false;

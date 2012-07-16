@@ -79,7 +79,7 @@ function ShapeCarve(dims, views, mask_color, skip) {
                 }
                 var fcolor = views[fnum][idx]
                   , fdepth = depth[fnum][idx];
-                if(fdepth === x[a]) {
+                if(t ?  fdepth <= x[a] : x[a] <= fdepth) {
                   if(fcolor !== color) {
                     consistent = false;
                     break;
@@ -109,26 +109,8 @@ function ShapeCarve(dims, views, mask_color, skip) {
   for(x[2]=0; x[2]<dims[2]; ++x[2])
   for(x[1]=0; x[1]<dims[1]; ++x[1])
   for(x[0]=0; x[0]<dims[0]; ++x[0], ++n) {
-    var c = volume[n];
-    if(c < 0) {
-      var closest_dist = 100000
-        , closest_color = mask_color;
-      for(var d=0; d<3; ++d)
-      for(var s=0; s<2; ++s) {
-        var buf_no = 2*d+s;
-        if(skip[buf_no]) {
-          continue;
-        }        
-        var u = (d+1)%3
-          , v = (d+2)%3
-          , idx = x[u] + dims[u]*x[v]
-          , dist = depth[buf_no][idx] - x[d];
-        if((!s ? -dist : dist) >= 0 && dist < closest_dist) {
-          closest_dist = dist;
-          closest_color = views[buf_no][idx];
-        }
-      }
-      volume[n] = closest_color;
+    if(volume[n] < 0) {
+      volume[n] = 0xff00ff;
     }
   }
   
