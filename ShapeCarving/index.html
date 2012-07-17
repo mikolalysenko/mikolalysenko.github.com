@@ -474,7 +474,9 @@ function updateMesh() {
   
    //Create surface mesh
   var material	= new THREE.MeshBasicMaterial({
-    vertexColors: true
+      color: 0xffffff 
+    , vertexColors: THREE.VertexColors
+    , shading: THREE.FlatShading
   });
   surfacemesh	= new THREE.Mesh( geometry, material );
   surfacemesh.doubleSided = false;
@@ -491,7 +493,7 @@ if( !init() )	animate();
 // init the scene
 function init(){
 	
-  if( Detector.webgl ){
+	if( Detector.webgl ){
 	  renderer = new THREE.WebGLRenderer({
 		  antialias		: true,	// to get smoother output
 		  preserveDrawingBuffer	: true	// to allow screenshot
