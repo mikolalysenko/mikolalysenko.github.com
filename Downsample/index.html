@@ -15,20 +15,21 @@
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
 		<script src="vendor/threex.dragpancontrols.js"></script>
 
+    <!--DSP-->
+    <script src="vendor/dsp.js"></script>
+
 
     <!--Mesh algorithms-->
     <script src="js/surfacenets.js"></script>
     
-    <!--Prefilters-->
-    <script src="js/clamp.js"></script>
-    <script src="js/sigmoid.js"></script>
-    
     <!--Downsamplers-->
+    <script src="js/nearestfilter.js"></script>
     <script src="js/boxfilter.js"></script>
     <script src="js/maxfilter.js"></script>
     <script src="js/minfilter.js"></script>
     <script src="js/medianfilter.js"></script>
-    
+    <script src="js/closing.js"></script>
+    <script src="js/opening.js"></script>
     
     <script src="js/perlinnoise.js"></script>
     <script src="js/testdata.js"></script>
@@ -49,8 +50,6 @@
 	  <div class="controls">
 	    <p>Input Data:</p>
 	    <p><select id="datasource"></select></p>
-	    <p>Prefilter:</p>
-	    <p><select id="prefilters"></select></p>
 	    <p>Filter:</p>
 	    <p><select id="filters"></select></p>
 	    <p>Scale:</p>
@@ -80,15 +79,14 @@
 		var camera, cameraControls;
 		var geometry, surfacemesh, wiremesh;
 		
-		var prefilters = {
-		    'Identity' : function(a) { return a; }
-		};
-		
 		var filters = {
-		     'Box Filter': BoxFilter
-		   , 'Max Filter': MaxFilter
-		   , 'Min Filter': MinFilter
-		   , 'Median Filter': MedianFilter
+		     'Nearest': NearestFilter
+		   , 'Trilinear': BoxFilter
+		   , 'Min': MinFilter
+		   , 'Max': MaxFilter
+		   , 'Median': MedianFilter
+		   , 'Closing': ClosingFilter
+		   , 'Opening': OpeningFilter
 		};
 		var testdata = {};
 		
@@ -103,12 +101,8 @@
 		  //Downsample volume
 		  var field = testdata[ document.getElementById("datasource").value ]()
 		    , num_iters = parseInt(document.getElementById('resolution').value, 10)
-		    , prefilter = prefilters[ document.getElementById("prefilters").value ]
 		    , filter = filters[ document.getElementById("filters").value ]
 		    , min_dim = Math.min(field.dims[0], Math.min(field.dims[1], field.dims[2]));
-		  
-		  //Prefilter volume
-		  field = prefilter(field);
 		  
 	    if((1 << num_iters) >= min_dim) {
 	      field = { volume: new Float32Array([0,0,0,0,0,0,0,0]), dims:[1,1,1] };
@@ -242,11 +236,6 @@
 			  ms.add(new Option(alg, alg), null);
 			}
 			ms.onchange = updateMesh;
-			var ps = document.getElementById("filters");
-			for(var alg in prefilters) {
-			  ps.add(new Option(alg, alg), null);
-			}
-			ps.onchange = updateMesh;
 			
 			document.getElementById("resolution").onchange = updateMesh;
 			
