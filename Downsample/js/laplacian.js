@@ -41,11 +41,11 @@ function BoxFilter(volume, dims) {
           if(ix >= dims[0]) {
             ix = 2*dims[0]-2-ix;
           }
-          s += volume[ix+dims[0]*(iy+dims[1]*(iz))] / (1 << (Math.abs(dx) + Math.abs(dy) + Math.abs(dz)));
+          s += volume[ix+dims[0]*(iy+dims[1]*(iz))];
         }
       }
     }
-    nvolume[n++] = s / 8.0;
+    nvolume[n++] = s / 27.0;
   }
   
   return { volume: nvolume, dims:ndims };
