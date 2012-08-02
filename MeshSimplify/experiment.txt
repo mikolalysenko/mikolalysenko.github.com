@@ -1,0 +1,141 @@
+
+Method:  tested each algorithm on 65^3 grid.  Plotted the function
+
+  sin(omega * x) + sin(omega * y) + sin(omega * z)
+
+in the range [-pi/2, pi/2] x [-pi/2, pi/2] x [-pi/2, pi/2]
+
+To control for garbage collection and other unpredictable run time events, each run was repeated 100x to get an averaged measurement.
+
+Also, since v8 has a JIT, we ran each method on a grid initialized with omega = 5 for 100 iterations in an attempt to trigger v8's optimizer.
+
+Measurements were taken on my laptop:
+
+  node.js version: 0.6.14
+  Linux Mint 12
+  CPU: Intel Core2 Duo P8700 @ 2.53GHz
+  RAM: 4 GB
+
+First column is omega, second column is time taken.  All measurements are in milliseconds (ms)
+
+mc:
+
+0, 29.93
+1, 43.62
+2, 61.48
+3, 93.31
+4, 138.2
+5, 145.8
+6, 186.0
+7, 213.2
+8, 255.9
+9, 272.1
+10, 274.6
+
+
+
+
+sn (no precalc):
+
+0, 26.79
+1, 33.95
+2, 44.87
+3, 54.74
+4, 59.81
+5, 86.61
+6, 98.45
+7, 114.5
+8, 131.2
+9, 131.0
+10, 147.7
+
+
+
+
+
+sn (w/ edge precalculation):
+
+0, 24.06
+1, 29.42
+2, 37.78
+3, 47.72
+4, 51.36
+5, 74.54
+6, 83.99
+7, 97.34
+8, 112.4
+9, 109.2
+10, 124.3
+
+
+
+mt (NOTE: Number of iterations was reduced to 20 in order to get benchmark to complete in a reasonable time):
+
+0, 57
+1, 171
+2, 250
+3, 392
+4, 510
+5, 620
+6, 784
+7, 922
+8, 1070
+9, 1220
+10, 1420
+
+
+
+
+
+
+Mesh sizes:
+
+vertices/faces:
+
+
+sn:
+
+0, 0
+7759, 7569
+15261, 14513
+23247, 22695
+30590, 29132
+38627, 37749
+45957, 43861
+53899, 52755
+60978, 58304
+68991, 67665
+76193, 73133
+
+
+
+mc:
+
+0, 0
+31038, 15520
+61034, 30512
+93042, 46548
+122378, 61204
+154758, 77504
+184138, 92224
+216282, 108484
+244514, 122576
+277422, 139440
+306554, 154168
+
+mt:
+
+0, 0
+139770, 42701
+214610, 65071
+338766, 102805
+431466, 130840
+553458, 167781
+652046, 197603
+769878, 233265
+869174, 263474
+986538, 298725
+1087086, 329083
+
+
+
