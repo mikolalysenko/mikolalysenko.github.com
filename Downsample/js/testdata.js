@@ -34,8 +34,65 @@ function createTestData() {
       }
       return {volume: volume, dims:res};
     });
-  }
+  } 
+
+  result['Sphere'] = makeVolume(
+    [[-1.55, 1.55, 0.05],
+     [-1.55, 1.55, 0.05],
+     [-1.55, 1.55, 0.05]],
+    function(x,y,z) {
+      var r = Math.sqrt(x*x + y*y + z*z);
+      return r - 0.64;
+    }
+  )
+
+  result['Torus'] = makeVolume(
+    [[-2.2, 2.2, 4.4 / 62.0],
+     [-2.2, 2.2, 4.4 / 62.0],
+     [-1.4, 1.4, 4.4 / 62.0]],
+    function(x,y,z) {
+      return Math.pow(1.0 - Math.sqrt(x*x + y*y), 2) + z*z - 0.25;
+    }
+  );
   
+  result['Hyperboloid'] = makeVolume(
+    [[-2.1, 2.1, 4.2/94.0],
+     [-2.1, 2.1, 4.2/94.0],
+     [-2.1, 2.1, 4.2/94.0]],
+    function(x,y,z) {
+      return Math.max(-1.4-z, Math.max(z-1.4,x*x + y*y - z*z - 0.1));
+    }
+  );
+  
+  result['Paraboloid'] = makeVolume(
+    [[-2.1, 2.1, 4.2/94.0],
+     [-2.1, 2.1, 4.2/94.0],
+     [-0.5, 2.5, 3.0/62.0]],
+    function(x,y,z) {
+      return Math.max(z-1.75, x*x + y*y - z);
+    }
+  )
+  
+  result['Saddle'] = makeVolume(
+    [[-2.0, 2.0, 4.0/94.0],
+     [-2.0, 2.0, 4.0/94.0],
+     [-2.0, 2.0, 4.0/94.0]],
+    function(x,y,z) {
+      return x*x - y*y - z;
+    }
+  )
+  
+
+  
+  
+  result['Hyperelliptic'] = makeVolume(
+    [[-2.0, 2.0, 4.0/62.0],
+     [-2.0, 2.0, 4.0/62.0],
+     [-2.0, 2.0, 4.0/62.0]],
+    function(x,y,z) {
+      return Math.pow( Math.pow(x, 6) + Math.pow(y, 6) + Math.pow(z, 6), 1.0/6.0 ) - 1.0;
+    }  
+  );
   
   result['Thin Plates'] = makeVolume(
     [[1, 63, 1],
@@ -65,36 +122,6 @@ function createTestData() {
     }
   );
   
-
-  result['Sphere'] = makeVolume(
-    [[-1.55, 1.55, 0.05],
-     [-1.55, 1.55, 0.05],
-     [-1.55, 1.55, 0.05]],
-    function(x,y,z) {
-      var r = Math.sqrt(x*x + y*y + z*z);
-      return r - 0.64;
-    }
-  )
-
-  result['Torus'] = makeVolume(
-    [[-2.2, 2.2, 4.4 / 62.0],
-     [-2.2, 2.2, 4.4 / 62.0],
-     [-1.4, 1.4, 4.4 / 62.0]],
-    function(x,y,z) {
-      return Math.pow(1.0 - Math.sqrt(x*x + y*y), 2) + z*z - 0.25;
-    }
-  );
-  
-  
-  
-  result['Hyperelliptic'] = makeVolume(
-    [[-2.0, 2.0, 4.0/62.0],
-     [-2.0, 2.0, 4.0/62.0],
-     [-2.0, 2.0, 4.0/62.0]],
-    function(x,y,z) {
-      return Math.pow( Math.pow(x, 6) + Math.pow(y, 6) + Math.pow(z, 6), 1.0/6.0 ) - 1.0;
-    }  
-  );
   
   result["Goursat's Surface"] = makeVolume(
     [[-3.0, 3.0, 6.0/62.0],
