@@ -1,0 +1,129 @@
+<html>
+  <head>
+    <title>Particle Test</title>
+    <script src="require.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+  </head>
+  <body>
+    <div id="info">
+      <p>
+        <label> Data Structure: </label>
+        <select id="dataStructure"></select>
+      </p>
+      <p>
+        <label> Spawn Rate: </label>
+        <input type="range" id="spawnRate" min="0" max="100" step="0.1" value="1.0" />
+      </p>
+      <p>
+        <label> Particle Count: </label>
+        <input type="text" id="particleCount" />
+      </p>
+      <p>
+        <label> Average Frame Time (ms): </label>
+        <input type="text" id="frameTime" />
+      </p>
+    
+    </div>
+  
+    <canvas id="particleCanvas" ></canvas>
+    
+    <script>
+
+// shim layer with setTimeout fallback
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+(function() {
+  "use strict";
+  
+  var particles = require('./tests/particles.js')
+    , vector    = require('./structures/vector.js')
+    , list      = require('./structures/list.js')
+    , unordered_vector = require('./structures/unordered_vector.js');
+  
+  //Initialize data structures
+  var data_structures = {
+      'Vector':     vector.create
+    , 'List':       list.create
+    , 'Unordered Vector': unordered_vector.create
+  };
+
+  //Initialize option list
+  for(var id in data_structures) {
+    document.getElementById("dataStructure").add(new Option(id, id));
+  }
+
+  var simulation
+    , data_structure;
+  function resetParticles() {
+    data_structure = data_structures[document.getElementById("dataStructure").value];
+    simulation = particles.create_particle_system({
+          data_structure: data_structure
+        , emitter_rate: 1.0 * document.getElementById("spawnRate").value
+    });
+  }
+  
+  document.getElementById("dataStructure").addEventListener("change", resetParticles, false);
+  resetParticles();
+  
+  document.getElementById("spawnRate").addEventListener("change", function() {
+    simulation.emitter_rate = 1.0 * document.getElementById("spawnRate").value;
+  }, false);
+  
+  //Tick every 15 ms
+  var avg_frame_time = 10;
+  setInterval(function() {
+    var start = new Date();
+    simulation.tick();
+    var end = new Date();
+    avg_frame_time = 0.7 * avg_frame_time + 0.3 * (end - start);
+  }, 15);
+  
+
+  //Retrieve context
+  var canvas  = document.getElementById("particleCanvas")
+    , context = canvas.getContext("2d");
+  
+  //Resize event handler
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resize, false);
+  resize();
+  
+  //Render event handler
+  function render() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    
+    var sx = canvas.width / 20.0
+      , sy = canvas.height / 20.0;
+    var count = 0;
+    
+    simulation.foreachParticle(function(x, y, vx, vy, color) {
+      ++count;
+      var intensity = Math.floor(255.0 * color);
+      context.fillStyle = 'rgb(' + intensity + ',' + intensity + ',' + intensity + ')';
+      context.fillRect(sx*(x+10.0)-3, sy*(y+10.0)-3, 6, 6);
+    });
+  
+    document.getElementById("frameTime").value = Math.round(1000*avg_frame_time)/1000.0;
+    document.getElementById("particleCount").value = count;
+
+    window.requestAnimFrame(render);
+  }
+  render();  
+           
+})();
+    
+    </script>
+  </body>
+</html>

@@ -39,3 +39,20 @@ def make_gif():
     pylab.savefig('frame{0}'.format(sigma))
 
 
+def make_gif2():
+  t = sp.arange(-5.0, 5.0, 0.01)
+  for sigma in range(1, 10):
+    pylab.clf()
+    pylab.figtext(0,0,"sigma={0}".format(2**sigma))
+    pylab.axis([-6.0, 6.0, -1.1, 1.1])
+    A = ndi.median_filter(shallow(t), 2.0**sigma)
+    B = ndi.median_filter(steep(t), 2.0**sigma)
+    pylab.plot(t, A, 'b')
+    pylab.plot(t, B, 'r')
+    pylab.plot(t, -1.0 * (A > 0), 'b')
+    pylab.plot(t, (B > 0), 'r')
+    pylab.plot(t, zero(t), 'k')
+    pylab.draw()
+    pylab.savefig('frame{0}'.format(sigma))
+
+
