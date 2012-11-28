@@ -1,0 +1,101 @@
+<html><!DOCTYPE html>
+<html>
+<head>
+  <title> MeshLife </title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link href="main.css" rel="stylesheet" type="text/css"></link>
+  <script src="jquery.min.js"></script>
+  <script src="GLOW.min.js"></script>
+  <script src="bundle.js"></script>
+</head>
+<body>
+  <div id="controls">
+    
+    <p> 
+      <h2> Simulation Parameters: </h2>
+      <br/>
+      <table>
+        <tr>
+          <td>
+            Mesh:
+          </td>
+          <td>
+            <select id="ctrl_Mesh">
+              <option>Grid</option>
+              <option>Sphere</option>
+              <option>Torus</option>
+              <option>Möbius</option>
+              <option>Bunny</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td> Subdivisions: </td>
+          <td> <input type="number" id="ctrl_Subdivs" value="0"></input> </td>
+        </tr>
+        <tr> 
+          <td> Outer Radius: </td>
+          <td> <input type="number" id="ctrl_OuterRadius" value="1.0"></input> </td>
+        </tr>
+        <tr>
+          <td> Inner Radius: </td>
+          <td> <input type="number" id="ctrl_InnerRadius" value="0.3333333"></input> </td>
+        </tr>
+        <tr>
+          <td> Birth Min: </td>
+          <td> <input type="number" id="ctrl_LiveLo" value="0.278"></input> </td>
+        </tr>
+        <tr>
+          <td> Birth Max: </td>
+          <td> <input type="number" id="ctrl_LiveHi" value="0.365"></input> </td>
+        </tr>
+        <tr>
+          <td> Survive Min: </td>
+          <td> <input type="number" id="ctrl_DeadLo" value="0.267"></input> </td>
+        </tr>
+        <tr>
+          <td> Survive Max: </td>
+          <td> <input type="number" id="ctrl_DeadHi" value="0.445"></input> </td>
+        </tr>
+        <tr>
+          <td> Alpha N: </td>
+          <td> <input type="number" id="ctrl_AlphaN" value="0.028"></input> </td>
+        </tr>
+        <tr>
+          <td> Alpha M: </td>
+          <td> <input type="number" id="ctrl_AlphaM" value="0.147"></input> </td>
+        </tr>
+        <tr>
+          <td> Timestep: </td>
+          <td>
+            <select id="ctrl_Timestep">
+              <option value="discrete">Discrete</option>
+              <option value="smooth1">Smooth 1</option>
+              <option value="smooth2">Smooth 2</option>
+              <option value="smooth3">Smooth 1 (M)</option>
+              <option value="smooth4">Smooth 2 (M)</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td> Delta t: </td>
+          <td> <input type="number" id="ctrl_DeltaT" value=0.1></input> </td>
+        </tr>
+        <tr>
+          <td> Initial Sites: </td>
+          <td> <input type="number" id="ctrl_Splats" value="100"></input> </td>
+        </tr>
+      </table>
+      <p><input type="button" id="ctrl_Rebuild" value="Rebuild System (SLOW)"></input></p>
+    </p>
+    
+    <p>
+      <input type="button" id="ctrl_Reset" value="Reset"></input>
+      <input type="button" id="ctrl_Pause" value="Pause"></input>
+      <input type="button" id="ctrl_Step" value="Step"></input>
+    </p>
+    
+  </div>
+  <div id="container"></div>
+</body>
+</html>
