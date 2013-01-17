@@ -52,7 +52,7 @@ return function(data, dims) {
     , faces = []
     , n = 0
     , x = new Int32Array(3)
-    , R = new Int32Array([1, (dims[0]+1), (dims[0]+1)*(dims[0]+1)])
+    , R = new Int32Array([1, (dims[0]+1), (dims[0]+1)*(dims[1]+1)])
     , grid = new Float32Array(8)
     , buf_no = 1;
    
