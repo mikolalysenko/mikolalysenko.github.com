@@ -1,3 +1,5 @@
+THIS IS FOR THE FRAMEWORK CODE, NOT ACTUAL JS CODE
+
 Copyright (c) 2011 Jerome Etienne, http://jetienne.com
 
 Permission is hereby granted, free of charge, to any person obtaining
