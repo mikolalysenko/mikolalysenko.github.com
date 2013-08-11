@@ -1,3 +1,5 @@
+THIS LICENSE IS FOR THE FRAMEWORK, NOT THE FILES IN JS/*
+
 Copyright (c) 2011 Jerome Etienne, http://jetienne.com
 
 Permission is hereby granted, free of charge, to any person obtaining
