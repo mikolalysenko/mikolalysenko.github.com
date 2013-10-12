@@ -4,8 +4,8 @@
 		<title>Isosurface Toolbox</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
-			
+
+
 		<script src="vendor/three.js/Three.js"></script>
 		<script src="vendor/three.js/Detector.js"></script>
 		<script src="vendor/three.js/Stats.js"></script>
@@ -20,7 +20,7 @@
     <script src="js/marchingcubes.js"></script>
     <script src="js/marchingtetrahedra.js"></script>
     <script src="js/surfacenets.js"></script>
-    
+
     <script src="js/perlinnoise.js"></script>
     <script src="js/testdata.js"></script>
 
@@ -48,9 +48,9 @@
 	    <p>Vertex count: <input type="text" id="vertcount" value="0" /> </p>
 	    <p>Face count: <input type="text" id="facecount" value="0" /> </p>
 	    <p>(Approx.) Time:<input type="text" id="meshtime" value="0" /> </p>
-	  </div> 
-	</div> 
-	
+	  </div>
+	</div>
+
 	<script type="text/javascript">
 		var stats, scene, renderer, composer;
 		var camera, cameraControl;
@@ -61,37 +61,36 @@
 	    ,  'Naive Surface Nets': SurfaceNets
 		};
 		var testdata = {};
-		
-		
+
 		function updateMesh() {
-		
+
 		  scene.remove( surfacemesh );
 		  scene.remove( wiremesh );
-		  
+
       //Create surface mesh
 			geometry	= new THREE.Geometry();
-		
+
 		  var mesher = meshers[ document.getElementById("mesher").value ]
 		    , field  = testdata[ document.getElementById("datasource").value ]();
-		    
+
 		  var start = (new Date()).getTime();
       var result = mesher( field.data, field.dims );
       var end = (new Date()).getTime();
-      
+
       //Update statistics
       document.getElementById("resolution").value = field.dims[0] + 'x' + field.dims[1] + 'x' + field.dims[2];
       document.getElementById("vertcount").value = result.vertices.length;
       document.getElementById("facecount").value = result.faces.length;
       document.getElementById("meshtime").value = (end - start) / 1000.0;
-      
+
       geometry.vertices.length = 0;
       geometry.faces.length = 0;
-      
+
       for(var i=0; i<result.vertices.length; ++i) {
         var v = result.vertices[i];
         geometry.vertices.push(new THREE.Vector3(v[0], v[1], v[2]));
       }
-      
+
       for(var i=0; i<result.faces.length; ++i) {
         var f = result.faces[i];
         if(f.length === 3) {
@@ -102,16 +101,43 @@
           //Polygon needs to be subdivided
         }
       }
-      
-      geometry.computeFaceNormals();
-      
+
+      var cb = new THREE.Vector3(), ab = new THREE.Vector3();
+      for (var i=0; i<geometry.faces.length; ++i) {
+        var f = geometry.faces[i];
+        var vA = geometry.vertices[f.a];
+        var vB = geometry.vertices[f.b];
+        var vC = geometry.vertices[f.c];
+        cb.sub(vC, vB);
+        ab.sub(vA, vB);
+        cb.crossSelf(ab);
+        cb.normalize();
+        if (result.faces[i].length == 3) {
+          f.normal.copy(cb)
+          continue;
+        }
+
+        // quad
+        if (cb.isZero()) {
+          // broken normal in the first triangle, let's use the second triangle
+          var vA = geometry.vertices[f.a];
+          var vB = geometry.vertices[f.c];
+          var vC = geometry.vertices[f.d];
+          cb.sub(vC, vB);
+          ab.sub(vA, vB);
+          cb.crossSelf(ab);
+          cb.normalize();
+        }
+        f.normal.copy(cb);
+      }
+
       geometry.verticesNeedUpdate = true;
       geometry.elementsNeedUpdate = true;
       geometry.normalsNeedUpdate = true;
-      
+
       geometry.computeBoundingBox();
       geometry.computeBoundingSphere();
-      
+
 			var material	= new THREE.MeshNormalMaterial();
 			surfacemesh	= new THREE.Mesh( geometry, material );
 			surfacemesh.doubleSided = true;
@@ -122,7 +148,7 @@
 			wiremesh = new THREE.Mesh(geometry, wirematerial);
 			wiremesh.doubleSided = true;
 			scene.add( surfacemesh );
-			scene.add( wiremesh );			
+			scene.add( wiremesh );
 
       var bb = geometry.boundingBox;
       wiremesh.position.x = surfacemesh.position.x = -(bb.max.x + bb.min.x) / 2.0;
@@ -134,7 +160,7 @@
 
 		// init the scene
 		function init(){
-				
+
 			if( Detector.webgl ){
 				renderer = new THREE.WebGLRenderer({
 					antialias		: true,	// to get smoother output
@@ -144,7 +170,7 @@
 			}else{
 			  renderer = new THREE.CanvasRenderer();
 			}
-			
+
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.getElementById('container').appendChild(renderer.domElement);
 
@@ -171,7 +197,7 @@
 			THREEx.Screenshot.bindKey(renderer);
 			// allow 'f' to go fullscreen where this feature is supported
 			if( THREEx.FullScreen.available() ){
-				THREEx.FullScreen.bindKey();		
+				THREEx.FullScreen.bindKey();
 				document.getElementById('inlineDoc').innerHTML	+= "- <i>f</i> for fullscreen";
 			}
 
@@ -182,7 +208,7 @@
 			var light	= new THREE.DirectionalLight( Math.random() * 0xffffff );
 			light.position.set( Math.random(), Math.random(), Math.random() ).normalize();
 			scene.add( light );
-			
+
 			//Initialize dom elements
 			testdata = createTestData();
 			var ds = document.getElementById("datasource");
@@ -195,13 +221,13 @@
 			  ms.add(new Option(alg, alg), null);
 			}
 			ms.onchange = updateMesh;
-			
+
 			document.getElementById("showfacets").checked = true;
 			document.getElementById("showedges").checked  = true;
-			
+
 			//Update mesh
 			updateMesh();
-			
+
 			return false;
 		}
 
