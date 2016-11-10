@@ -141,6 +141,98 @@ function createTestData() {
       return  y + PerlinNoise.noise(x*2+5,y*2+3,z*2+0.6);
     }
   );
+
+  function distanceFromConvexPlanes(planes, planeOffsets, x, y, z) {
+    var maxDistance = -Infinity;
+    for(var i = 0; i < planes.length; i++) {
+      var x_ = x - planeOffsets[i][0];
+      var y_ = y - planeOffsets[i][1];
+      var z_ = z - planeOffsets[i][2];
+
+      var dotProduct = planes[i][0] * x_ + planes[i][1] * y_ + planes[i][2] * z_;
+
+      maxDistance = Math.max(maxDistance, dotProduct);
+    }
+
+    return maxDistance;
+  }
+
+  result['Pyramid'] = makeVolume(
+    [[-1, 1, 0.125],
+     [-1, 1, 0.125],
+     [-1, 1, 0.125]],
+    function(x,y,z) {
+      var ROOT_3 = Math.sqrt(3);
+
+      var planes = [[-ROOT_3, ROOT_3, -ROOT_3],
+                    [-ROOT_3, ROOT_3,  ROOT_3],
+                    [ ROOT_3, ROOT_3, -ROOT_3],
+                    [ ROOT_3, ROOT_3,  ROOT_3]];
+      var planeOffsets = [[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
+
+      return distanceFromConvexPlanes(planes, planeOffsets, x, y, z);
+    }
+  );
+
+  result['1/2 Offset Pyramid'] = makeVolume(
+    [[-1, 1, 0.125],
+     [-1, 1, 0.125],
+     [-1, 1, 0.125]],
+    function(x,y,z) {
+      var ROOT_3 = Math.sqrt(3);
+
+      var planes = [[-ROOT_3, ROOT_3, -ROOT_3],
+                    [-ROOT_3, ROOT_3,  ROOT_3],
+                    [ ROOT_3, ROOT_3, -ROOT_3],
+                    [ ROOT_3, ROOT_3,  ROOT_3]];
+      var planeOffsets = [[0.0625, 0.0625, 0.0625],
+                          [0.0625, 0.0625, 0.0625],
+                          [0.0625, 0.0625, 0.0625],
+                          [0.0625,0.0625,0.0625]];
+
+      return distanceFromConvexPlanes(planes, planeOffsets, x, y, z);
+    }
+  );
+
+  result['Tetrahedron'] = makeVolume(
+    [[-1, 1, 0.125],
+     [-1, 1, 0.125],
+     [-1, 1, 0.125]],
+    function(x,y,z) {
+      var INV_ROOT_3 = Math.sqrt(3)/3;
+
+      var planes = [[ INV_ROOT_3,  INV_ROOT_3,  INV_ROOT_3],
+                    [-INV_ROOT_3, -INV_ROOT_3,  INV_ROOT_3],
+                    [ INV_ROOT_3, -INV_ROOT_3, -INV_ROOT_3],
+                    [-INV_ROOT_3,  INV_ROOT_3, -INV_ROOT_3]];
+      var planeOffsets = [[ 0.25,  0.25,  0.25],
+                          [-0.25, -0.25,  0.25],
+                          [ 0.25, -0.25, -0.25],
+                          [-0.25,  0.25, -0.25]];
+
+      return distanceFromConvexPlanes(planes, planeOffsets, x, y, z);
+    }
+  );
+
+  result['1/2 Offset Tetrahedron'] = makeVolume(
+    [[-1, 1, 0.125],
+     [-1, 1, 0.125],
+     [-1, 1, 0.125]],
+    function(x,y,z) {
+      var INV_ROOT_3 = Math.sqrt(3)/3;
+
+      var planes = [[ INV_ROOT_3,  INV_ROOT_3,  INV_ROOT_3],
+                    [-INV_ROOT_3, -INV_ROOT_3,  INV_ROOT_3],
+                    [ INV_ROOT_3, -INV_ROOT_3, -INV_ROOT_3],
+                    [-INV_ROOT_3,  INV_ROOT_3, -INV_ROOT_3]];
+      var planeOffsets = [[ 0.3125,  0.3125,  0.3125],
+                          [-0.3125, -0.3125,  0.3125],
+                          [ 0.3125, -0.3125, -0.3125],
+                          [-0.3125,  0.3125, -0.3125]];
+
+      return distanceFromConvexPlanes(planes, planeOffsets, x, y, z);
+    }
+  );
   
   result['Empty'] = function(){ return { data: new Float32Array(32*32*32), dims:[32,32,32] } };
   
